@@ -34,7 +34,6 @@ class Visual(QWidget):
             QWidget {
                 background-color: #001940;  /* 科技感深蓝背景作为备选 */
                 font-family: "微软雅黑";
-                border:1px solid #0d577f;
             }
  
         """)
@@ -49,7 +48,7 @@ class Visual(QWidget):
         title_label = QLabel("奥特曼招聘信息可视化平台")
         title_label.setStyleSheet("""
             color: #00ffff;
-            font-size: 23px;
+            font-size: 25px;
             font-weight: bold;
             background-color: #000b29;  /* 半透科技感深蓝背景 */
             text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
