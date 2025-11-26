@@ -80,6 +80,9 @@ class LoginWindow(QWidget):
         self.setMinimumSize(450, 500)
         self.resize(500, 550)
         
+        # 设置窗口图标
+        self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
+        
         # 设置科技感样式
         self.setStyleSheet("""
             QWidget {
@@ -242,6 +245,8 @@ class LoginWindow(QWidget):
             
             # 这里可以打开主应用窗口
             self.main_window = Visual()
+            # 为可视化窗口设置图标
+            self.main_window.setWindowIcon(QIcon("./visual/static/img/icon.png"))
             self.main_window.show()
             self.close()
         else:

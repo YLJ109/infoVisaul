@@ -1,7 +1,7 @@
 import json
 import os
 from PyQt6.QtCore import Qt, QEasingCurve, QPropertyAnimation
-from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPixmap
+from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPixmap, QIcon
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QGraphicsDropShadowEffect, QApplication, QFrame
 
 
@@ -76,6 +76,9 @@ class RegisterWindow(QWidget):
         self.setWindowTitle("用户注册")
         self.setMinimumSize(450, 600)
         self.resize(500, 650)
+        
+        # 设置窗口图标
+        self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         
         # 设置科技感样式
         self.setStyleSheet("""
@@ -238,6 +241,8 @@ class RegisterWindow(QWidget):
     def back_to_login(self):
         from visual.page.login_window import LoginWindow  # Move import here to avoid circular import
         self.login_window = LoginWindow()
+        # 为登录窗口设置图标
+        self.login_window.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         self.login_window.show()
         self.close()
 

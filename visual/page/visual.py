@@ -1,7 +1,7 @@
 import sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeySequence, QAction, QPixmap, QShortcut
+from PyQt6.QtGui import QKeySequence, QAction, QPixmap, QShortcut, QIcon
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QApplication, QHBoxLayout
 from visual.view.CompanyType_Salary_Visualization import CompanyTypeSalaryVisualization
 from visual.view.Education_Salary_Visualization import EducationSalaryVisualization
@@ -13,13 +13,15 @@ from visual.view.Salary_Range_Visualization import SalaryRangeVisualization
 class Visual(QWidget):
     def __init__(self):
         super().__init__()
-
+        self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         self.is_fullscreen = False
         self.init_ui()
         
     def init_ui(self):
         self.setWindowTitle('奥特曼招聘信息可视化平台')
         self.setGeometry(100, 100, 1300, 700)
+        # 设置窗口图标
+        self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
 
         companyTypeSalaryVisualization = CompanyTypeSalaryVisualization()
         educationSalaryVisualization = EducationSalaryVisualization()
