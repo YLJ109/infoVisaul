@@ -1,7 +1,7 @@
 import sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QKeySequence, QAction, QPixmap, QShortcut, QIcon
+from PyQt6.QtGui import QKeySequence, QShortcut, QIcon
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QApplication, QHBoxLayout
 from visual.view.CompanyType_Salary_Visualization import CompanyTypeSalaryVisualization
 from visual.view.Education_Salary_Visualization import EducationSalaryVisualization
