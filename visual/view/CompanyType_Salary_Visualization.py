@@ -25,10 +25,10 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
         company_counts = self.df['公司性质'].value_counts().head(10)
         bar = Bar(
             init_opts=opts.InitOpts(
-                theme=ThemeType.LIGHT,
+                theme=ThemeType.DARK,
                 width=f"{self.win_w-40}px",
                 height=f"{self.win_h-40}px",
-                bg_color=self.web_bg_color  # 深色背景以配合白色文字
+                bg_color=self.web_bg_color  # 深蓝色科技感背景
             )
         )
         bar.add_xaxis(company_counts.index.tolist())
@@ -37,7 +37,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                       label_opts=opts.LabelOpts(
                           is_show=True,
                           position="top",
-                          color="white"  # 白色标签文字
+                          color="#00ffff"  # 科技蓝白色标签文字
                       )
                       )
         bar.set_global_opts(
@@ -47,7 +47,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                     font_size=18,
                     font_weight="bold",
                     font_family="微软雅黑",
-                    color="white"  # 白色标题文字
+                    color="#00ffff"  # 科技蓝白色标题文字
                 ),
                 pos_top="10px"
             ),
@@ -55,7 +55,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 pos_top="10%",
                 textstyle_opts=opts.TextStyleOpts(
                     font_size=12,
-                    color="white"  # 白色图例文字
+                    color="#00ffff"  # 科技蓝白色图例文字
                 )
             ),
             xaxis_opts=opts.AxisOpts(
@@ -63,33 +63,33 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 axislabel_opts=opts.LabelOpts(
                     rotate=45,
                     font_size=11,
-                    color="white"  # 白色X轴标签文字
+                    color="#00ffff"  # 科技蓝白色X轴标签文字
                 ),
                 name_gap=5,
                 axisline_opts=opts.AxisLineOpts(
-                    linestyle_opts=opts.LineStyleOpts(color="white")  # 白色轴线
+                    linestyle_opts=opts.LineStyleOpts(color="#00ffff")  # 科技蓝白色轴线
                 )
             ),
             yaxis_opts=opts.AxisOpts(
                 type_="value",
                 axislabel_opts=opts.LabelOpts(
                     font_size=11,
-                    color="white"  # 白色Y轴标签文字
+                    color="#00ffff"  # 科技蓝白色Y轴标签文字
                 ),
                 axisline_opts=opts.AxisLineOpts(
-                    linestyle_opts=opts.LineStyleOpts(color="white")  # 白色轴线
+                    linestyle_opts=opts.LineStyleOpts(color="#00ffff")  # 科技蓝白色轴线
                 )
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="axis",
-                textstyle_opts=opts.TextStyleOpts(color="white"),  # 白色提示文字
+                textstyle_opts=opts.TextStyleOpts(color="#00ffff"),  # 科技蓝白色提示文字
                 background_color="rgba(0, 0, 0, 0.7)"  # 深色提示框背景
             )
         )
         bar.set_series_opts(
             label_opts=opts.LabelOpts(
                 position="top",
-                color="white"  # 白色数据标签
+                color="#00ffff"  # 科技蓝白色数据标签
             )
         )
         return bar

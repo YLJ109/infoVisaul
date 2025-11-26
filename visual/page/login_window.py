@@ -57,16 +57,17 @@ class ModernLineEdit(QLineEdit):
         self.setPlaceholderText(placeholder)
         self.setStyleSheet("""
             QLineEdit {
-                background-color: rgba(255, 255, 255, 0.8);
-                border: 2px solid #E0E0E0;
+                background-color: rgba(0, 25, 64, 0.8);  /* 深蓝背景 */
+                border: 2px solid #00ffff;  /* 科技感青蓝色边框 */
                 border-radius: 12px;
                 padding: 14px;
                 font-size: 14px;
+                color: #ffffff;  /* 白色文字 */
                 selection-background-color: #6C63FF;
             }
             QLineEdit:focus {
                 border: 2px solid #6C63FF;
-                background-color: white;
+                background-color: rgba(0, 40, 100, 0.9);  /* 聚焦时稍亮的背景 */
             }
         """)
         self.setMinimumHeight(50)
@@ -79,11 +80,11 @@ class LoginWindow(QWidget):
         self.setMinimumSize(450, 500)
         self.resize(500, 550)
         
-        # 设置整体样式
+        # 设置科技感样式
         self.setStyleSheet("""
             QWidget {
                 background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,
-                                          stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+                                          stop: 0 #001940, stop: 1 #003366);  /* 科技感深蓝渐变背景 */
                 font-family: "微软雅黑";
             }
         """)
@@ -100,7 +101,7 @@ class LoginWindow(QWidget):
         title_label = QLabel("欢迎回来")
         title_label.setStyleSheet("""
             background-color: transparent;
-            color: #333;
+            color: #00ffff;  /* 科技感青蓝色文字 */
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 5px;
@@ -110,7 +111,7 @@ class LoginWindow(QWidget):
         subtitle_label = QLabel("请登录您的账户")
         subtitle_label.setStyleSheet("""
             background-color: transparent;
-            color: #666;
+            color: #cccccc;  /* 浅灰色文字 */
             font-size: 16px;
             margin-bottom: 30px;
         """)
@@ -120,7 +121,8 @@ class LoginWindow(QWidget):
         form_container = QFrame()
         form_container.setStyleSheet("""
             QFrame {
-                background-color: rgba(255, 255, 255, 0.85);
+                background-color: rgba(0, 25, 64, 0.85);  /* 深蓝半透明背景 */
+                border: 1px solid #00ffff;  /* 科技感青蓝色边框 */
                 border-radius: 20px;
                 padding: 25px;
             }
@@ -140,7 +142,7 @@ class LoginWindow(QWidget):
         self.remember_checkbox = QCheckBox("记住密码")
         self.remember_checkbox.setStyleSheet("""
             QCheckBox {
-                color: #666;
+                color: #cccccc;  /* 浅灰色文字 */
                 font-size: 14px;
                 background-color: transparent;
             }
@@ -177,7 +179,7 @@ class LoginWindow(QWidget):
         register_label = QLabel("还没有账户?")
         register_label.setStyleSheet("""
             background-color: transparent;
-            color: #666;
+            color: #cccccc;  /* 浅灰色文字 */
             font-size: 14px;
         """)
         

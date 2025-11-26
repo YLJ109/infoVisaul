@@ -28,14 +28,13 @@ class Visual(QWidget):
         regionalJobVisualization = RegionalJobVisualization()
         salaryRangeVisualization = SalaryRangeVisualization()
 
-        # 设置背景图片
         self.setStyleSheet("""
-            #companyTypeSalaryVisualization {
-                background-color: #001940;
+            QWidget {
+                background-color: #001940;  /* 科技感深蓝背景作为备选 */
                 font-family: "微软雅黑";
-                border:1px solid red;
+                border:1px solid #0d577f;
             }
-
+ 
         """)
 
         top_layout = QHBoxLayout()
@@ -47,11 +46,12 @@ class Visual(QWidget):
 
         title_label = QLabel("奥特曼招聘信息可视化平台")
         title_label.setStyleSheet("""
-            color: rgb(255,255,255);
+            color: #00ffff;
             font-size: 23px;
             font-weight: bold;
- 
-            background-color: rgb(18, 45, 100);
+            background-color: #000b29;  /* 半透科技感深蓝背景 */
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+            letter-spacing: 2px;
         """)
         title_label.setFixedHeight(70)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -83,8 +83,10 @@ class Visual(QWidget):
         """切换全屏/窗口模式"""
         if self.isFullScreen():
             self.showNormal()
+            self.is_fullscreen = False
         else:
             self.showFullScreen()
+            self.is_fullscreen = True
 
         
 if __name__ == '__main__':

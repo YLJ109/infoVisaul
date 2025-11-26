@@ -8,19 +8,17 @@ import os
 class CodeTemplate(QWidget):
     def __init__(self):
         super().__init__()
-        # 设置背景色
+        # 设置科技感背景色
         self.setStyleSheet("""
-            QWidget {
-                background-color: ##001940;
-                border:1px solid red;
-            }
+
+              border:1px solid #0d577f;
 
         """)
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
-        self.win_w = 540
+        self.win_w = 500
         self.win_h = 420
-        self.web_bg_color = "#12214c"
+        self.web_bg_color = "#001940"  # 科技感深蓝背景
         self.setGeometry(100, 100, self.win_w, self.win_h)
         self.data_path = setting.data_path # 数据文件路径
         self.echarts_js_path = setting.echarts_js_path # ECharts JS 文件路径
@@ -36,11 +34,6 @@ class CodeTemplate(QWidget):
         main_layout.setContentsMargins(0, 0, 0, 0)
         # 创建网页视图用于显示图表
         self.web_view = QWebEngineView()
-        self.web_view.setStyleSheet("""
- 
-                border:1px solid red;
-            
-        """)
         # 设置WebEngine的参数，解决可能的显示问题
         self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessRemoteUrls, True)
         self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessFileUrls, True)
@@ -84,13 +77,13 @@ class CodeTemplate(QWidget):
         head_end_index = html_content.find('</head>')
         if head_end_index != -1:
             # 在head中添加自定义CSS样式设置body背景色以及padding和margin为0
-            custom_style = '<style>body { background-color: #041541 !important;  }</style>'
+            custom_style = '<style>body { background-color: #001940 !important;border:1px solid #0d577f; }</style>'
             modified_html = (html_content[:head_end_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[head_end_index:])
         else:
             # 如果没有</head>标签，就加在<body>前面
             body_start_index = html_content.find('<body>')
-            custom_style = '<style>body { background-color: #034d6a !important; padding: 0; margin: 0; }</style>'
+            custom_style = '<style>body { background-color: #001940 !important; padding: 0; margin: 0; }</style>'
             modified_html = (html_content[:body_start_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[body_start_index:])
         # 4. 在WebView中显示修改后的HTML

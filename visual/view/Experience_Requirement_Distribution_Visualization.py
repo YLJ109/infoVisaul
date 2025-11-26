@@ -45,7 +45,7 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         experience_percentages = (experience_counts / total) * 100
 
         # 创建折线图
-        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w-40}px", height=f"{self.win_h-40}px", bg_color=self.web_bg_color))
+        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w-40}px", height=f"{self.win_h-40}px", bg_color=self.web_bg_color))  # 科技感背景色
 
         # 添加X轴
         line.add_xaxis(experience_percentages.index.tolist())
@@ -54,7 +54,7 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         line.add_yaxis(
             series_name="岗位占比",
             y_axis=[round(val, 2) for val in experience_percentages.values.tolist()],
-            label_opts=opts.LabelOpts(is_show=True, position="top", formatter="{c}%", color="#ffffff"),
+            label_opts=opts.LabelOpts(is_show=True, position="top", formatter="{c}%", color="#00ffff"),  # 科技感青蓝色
             symbol_size=10,
             is_smooth=True
         )
@@ -63,21 +63,21 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         line.set_global_opts(
             title_opts=opts.TitleOpts(
                 title="工作经验要求分布占比趋势",
-                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#ffffff")
+                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             legend_opts=opts.LegendOpts(
                 pos_top="10%",
-                textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#ffffff")
+                textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             xaxis_opts=opts.AxisOpts(
-                axislabel_opts=opts.LabelOpts(font_size=12, rotate=30, font_family="微软雅黑", color="#ffffff")
+                axislabel_opts=opts.LabelOpts(font_size=12, rotate=30, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             yaxis_opts=opts.AxisOpts(
                 name="占比(%)",
-                name_textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#ffffff"),
-                axislabel_opts=opts.LabelOpts(font_size=12, font_family="微软雅黑", formatter="{value}%", color="#ffffff")
+                name_textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#00ffff"),  # 科技感青蓝色
+                axislabel_opts=opts.LabelOpts(font_size=12, font_family="微软雅黑", formatter="{value}%", color="#00ffff")  # 科技感青蓝色
             ),
-            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line", background_color="rgba(0, 0, 0, 0.7)", border_color="#ffffff", border_width=1)
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=1)  # 科技感青蓝色边框
         )
 
         return line

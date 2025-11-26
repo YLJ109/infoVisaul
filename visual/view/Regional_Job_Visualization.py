@@ -35,7 +35,7 @@ class RegionalJobVisualization(CodeTemplate):
                 theme=ThemeType.DARK,
                 width=f"{self.win_w-40}px",
                 height=f"{self.win_h-40}px",
-                bg_color=self.web_bg_color
+                bg_color=self.web_bg_color  # 科技感背景色
             )
         )
         
@@ -48,14 +48,14 @@ class RegionalJobVisualization(CodeTemplate):
             y_axis=region_counts.values.tolist(),
             label_opts=opts.LabelOpts(is_show=True, position="top", 
                                     font_family="微软雅黑", font_size=12,
-                                    color="#ffffff"),
+                                    color="#00ffff"),  # 科技感青蓝色
             linestyle_opts=opts.LineStyleOpts(width=3, color="#1f77b4",
                                             type_="solid"),
             symbol_size=8,
             is_smooth=True,  # 平滑曲线
             symbol="circle",
             itemstyle_opts=opts.ItemStyleOpts(color="#1f77b4", border_width=2,
-                                            border_color="#ffffff"),
+                                            border_color="#00ffff"),  # 科技感青蓝色
             areastyle_opts=opts.AreaStyleOpts(opacity=0.3, color="#1f77b4")
         )
 
@@ -67,41 +67,41 @@ class RegionalJobVisualization(CodeTemplate):
                     font_size=20,
                     font_weight="bold",
                     font_family="微软雅黑",
-                    color="#ffffff"
+                    color="#00ffff"  # 科技感青蓝色
                 ),
                 subtitle_textstyle_opts=opts.TextStyleOpts(
                     font_size=14,
                     font_family="微软雅黑",
-                    color="#ffffff"
+                    color="#00ffff"  # 科技感青蓝色
                 ),
                 pos_top="20px"
             ),
             xaxis_opts=opts.AxisOpts(
                 type_="category",
                 axislabel_opts=opts.LabelOpts(rotate=30, font_family="微软雅黑",
-                                            font_size=12, color="#ffffff"),
+                                            font_size=12, color="#00ffff"),  # 科技感青蓝色
                 axisline_opts=opts.AxisLineOpts(is_show=True,
-                                              linestyle_opts=opts.LineStyleOpts(color="#ffffff")),
+                                              linestyle_opts=opts.LineStyleOpts(color="#00ffff")),  # 科技感青蓝色
                 axistick_opts=opts.AxisTickOpts(is_show=True)
             ),
             yaxis_opts=opts.AxisOpts(
                 type_="value",
                 name_textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",
-                                                     font_size=14, color="#ffffff"),
+                                                     font_size=14, color="#00ffff"),  # 科技感青蓝色
                 axislabel_opts=opts.LabelOpts(font_family="微软雅黑", font_size=12,
-                                            color="#ffffff"),
+                                            color="#00ffff"),  # 科技感青蓝色
                 axisline_opts=opts.AxisLineOpts(is_show=True,
-                                              linestyle_opts=opts.LineStyleOpts(color="#ffffff")),
+                                              linestyle_opts=opts.LineStyleOpts(color="#00ffff")),  # 科技感青蓝色
                 splitline_opts=opts.SplitLineOpts(is_show=True,
-                                                linestyle_opts=opts.LineStyleOpts(color="#ffffff"))
+                                                linestyle_opts=opts.LineStyleOpts(color="#00ffff"))  # 科技感青蓝色
             ),
             tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line",
                                         background_color="rgba(0, 0, 0, 0.7)",
-                                        border_color="#ffffff",
+                                        border_color="#00ffff",  # 科技感青蓝色
                                         border_width=1),
             legend_opts=opts.LegendOpts(pos_top="60px",
                                       textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",
-                                                                      color="#ffffff")),
+                                                                      color="#00ffff")),  # 科技感青蓝色
 
         )
         

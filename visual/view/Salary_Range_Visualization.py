@@ -132,23 +132,23 @@ class SalaryRangeVisualization(CodeTemplate):
                 })
 
         # 创建桑基图
-        sankey = Sankey(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w-40}px", height=f"{self.win_h-40}px", bg_color=self.web_bg_color))
+        sankey = Sankey(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w-40}px", height=f"{self.win_h-40}px", bg_color=self.web_bg_color))  # 科技感背景色
 
         sankey.add(
             series_name="薪资区间分布",
             nodes=nodes,
             links=links,
             linestyle_opt=opts.LineStyleOpts(opacity=0.2, curve=0.5, color="source"),
-            label_opts=opts.LabelOpts(position="right", color="#ffffff"),
+            label_opts=opts.LabelOpts(position="right", color="#00ffff"),  # 科技感青蓝色
         )
 
         # 全局配置
         sankey.set_global_opts(
             title_opts=opts.TitleOpts(
                 title="薪资区间分布桑基图",
-                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#ffffff")
+                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
-            tooltip_opts=opts.TooltipOpts(trigger="item", trigger_on="mousemove", background_color="rgba(0, 0, 0, 0.7)", border_color="#ffffff", border_width=1)
+            tooltip_opts=opts.TooltipOpts(trigger="item", trigger_on="mousemove", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=1)  # 科技感青蓝色边框
         )
 
         return sankey

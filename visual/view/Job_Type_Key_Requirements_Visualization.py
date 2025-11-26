@@ -70,7 +70,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                 theme=ThemeType.DARK,
                 width=f"{self.win_w-40}px",
                 height=f"{self.win_h-40}px",
-                bg_color=self.web_bg_color
+                bg_color=self.web_bg_color  # 科技感背景色
             )
         )
         
@@ -84,7 +84,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
         scatter.add_yaxis(
             series_name="关键词出现频率",
             y_axis=[list(z) for z in zip(y_data, size_data)],  # 同时传递y轴数据和点大小
-            label_opts=opts.LabelOpts(is_show=False, color="#ffffff"),
+            label_opts=opts.LabelOpts(is_show=False, color="#00ffff"),  # 科技感青蓝色
             itemstyle_opts=opts.ItemStyleOpts(color="#1f77b4"),  # 设置点的颜色
             encode={"tooltip": [0, 1, 2]}  # 编码提示框显示内容
         )
@@ -97,7 +97,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                     font_size=18,
                     font_weight="bold",
                     font_family="微软雅黑",
-                    color="#ffffff"
+                    color="#00ffff"  # 科技感青蓝色
                 ),
                 pos_top="10px"
             ),
@@ -114,12 +114,12 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             ),
             xaxis_opts=opts.AxisOpts(
                 type_="category",
-                axislabel_opts=opts.LabelOpts(rotate=45, font_size=11, color="#ffffff"),
+                axislabel_opts=opts.LabelOpts(rotate=45, font_size=11, color="#00ffff"),  # 科技感青蓝色
                 name_gap=5
             ),
             yaxis_opts=opts.AxisOpts(
                 type_="category",
-                axislabel_opts=opts.LabelOpts(font_size=11, color="#ffffff")
+                axislabel_opts=opts.LabelOpts(font_size=11, color="#00ffff")  # 科技感青蓝色
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="item",
