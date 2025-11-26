@@ -1,5 +1,6 @@
-pyecharts == 1.9.1
-pyqt6-sip
+pyecharts
 requests
 pandas
 numpy
+PyQt6
+pyqt6-webengine
