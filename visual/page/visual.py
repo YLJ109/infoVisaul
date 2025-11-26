@@ -18,11 +18,12 @@ class Visual(QWidget):
         self.init_ui()
         
     def init_ui(self):
+
         self.setWindowTitle('奥特曼招聘信息可视化平台')
         self.setGeometry(100, 100, 1300, 700)
         # 设置窗口图标
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
-
+        self.showFullScreen()
         companyTypeSalaryVisualization = CompanyTypeSalaryVisualization()
         educationSalaryVisualization = EducationSalaryVisualization()
         experienceRequirementDistributionVisualization = ExperienceRequirementDistributionVisualization()
@@ -79,6 +80,10 @@ class Visual(QWidget):
         # 创建全屏快捷键 (使用QShortcut)
         fullscreen_shortcut = QShortcut(QKeySequence(Qt.Key.Key_F11), self)
         fullscreen_shortcut.activated.connect(self.toggle_fullscreen)
+        
+        # 创建退出快捷键 (使用QShortcut)
+        quit_shortcut = QShortcut(QKeySequence(Qt.Key.Key_Escape), self)
+        quit_shortcut.activated.connect(self.close)
     
     def toggle_fullscreen(self):
         """切换全屏/窗口模式"""
