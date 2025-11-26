@@ -93,10 +93,6 @@ class CodeTemplate(QWidget):
 
 
 if __name__ == "__main__":
-    # 设置WebEngine参数，解决可能的显示问题
-    import os
-    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu --no-sandbox"
-
     app = QApplication(sys.argv)
     window = CodeTemplate()
     window.show()
