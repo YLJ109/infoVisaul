@@ -5,3 +5,8 @@ pandas
 numpy
 PyQt6
 pyqt6-webengine
+pyecharts-jupyter-installer
+echarts-countries-pypkg
+echarts-china-provinces-pypkg
+echarts-china-cities-pypkg
+pip==20.2.3

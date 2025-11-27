@@ -28,14 +28,16 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                     return None
                 try:
                     # 分割薪资范围字符串
-                    parts = str(salary_str).split('-')
+                    # 处理不同的薪资格式，如"10-15K"或"10K-15K"
+                    salary_str = str(salary_str).replace('K', '').replace('k', '').replace('元/月', '')
+                    parts = salary_str.split('-')
                     if len(parts) == 2:
-                        low = int(parts[0])
-                        high = int(parts[1])
-                        return (low + high) / 2  # 返回平均值
+                        low = float(parts[0])
+                        high = float(parts[1])
+                        return (low + high) / 2 * 1000  # 转换为元
                     else:
-                        # 如果不是范围格式，尝试直接转换为整数
-                        return int(salary_str)
+                        # 如果不是范围格式，尝试直接转换为数值
+                        return float(salary_str) * 1000 if 'K' in str(salary_str) or 'k' in str(salary_str) else float(salary_str)
                 except:
                     return None
             
@@ -126,7 +128,9 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
         # 计算最大薪资值，用于可视化映射
         max_salary = 100  # 默认值
         if heatmap_data:
-            max_salary = max([item[2] for item in heatmap_data])
+            salaries = [item[2] for item in heatmap_data if item[2] > 0]
+            if salaries:
+                max_salary = max(salaries)
             max_salary = max_salary if max_salary > 0 else 100  # 确保最大值大于0
 
         # 全局配置

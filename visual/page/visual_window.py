@@ -18,7 +18,7 @@ class Visual(QWidget):
         
     def init_ui(self):
 
-        self.setWindowTitle('奥特曼就业市场洞察系统')
+        self.setWindowTitle('一零九就业市场洞察系统')
         self.setGeometry(100, 100, 1300, 700)
         # 设置窗口图标
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))

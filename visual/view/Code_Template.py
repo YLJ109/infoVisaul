@@ -3,8 +3,10 @@ import tempfile
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QMessageBox
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6 import QtCore
+from PyQt6.QtWebEngineCore import QWebEngineSettings
 import visual.setting as setting
 import os
+
 class CodeTemplate(QWidget):
     def __init__(self):
         super().__init__()
@@ -25,6 +27,8 @@ class CodeTemplate(QWidget):
         # self.setMinimumWidth(self.win_w+20)
         self.data_path = setting.data_path # 数据文件路径
         self.echarts_js_path = setting.echarts_js_path # ECharts JS 文件路径
+        self.china_geo_path = getattr(setting, 'china_geo_path', None) # China Geo 文件路径
+        
         self.echarts_js_content = self._load_echarts_js()   # 读取 ECharts JS 内容
         self.init_ui() # 初始化UI
         self.load_data()    # 加载数据
@@ -39,15 +43,29 @@ class CodeTemplate(QWidget):
         self.web_view = QWebEngineView()
 
         # 设置WebEngine的参数，解决可能的显示问题
-        self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessRemoteUrls, True)
-        self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessFileUrls, True)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        
+        # 禁用WebGL和硬件加速以提高兼容性
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, False)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, False)
+        
         main_layout.addWidget(self.web_view)
         
     def _load_echarts_js(self):
         """读取 ECharts JS 文件内容"""
         try:
             with open(self.echarts_js_path, 'r', encoding='utf-8') as f:
-                return f.read()
+                echarts_content = f.read()
+                
+            # 如果有单独的地理数据文件，也加载它
+            if self.china_geo_path and os.path.exists(self.china_geo_path):
+                with open(self.china_geo_path, 'r', encoding='utf-8') as f:
+                    geo_content = f.read()
+                # 将地理数据附加到echarts内容后面
+                echarts_content = echarts_content + ";\n" + geo_content
+                
+            return echarts_content
         except Exception as e:
             QMessageBox.warning(self, "警告", f"无法加载 ECharts JS 文件: {str(e)}", QMessageBox.StandardButton.Ok)
             return None
@@ -69,9 +87,9 @@ class CodeTemplate(QWidget):
             # 图表创建失败
             return
 
-        # 1. 渲染图表到临时HTML文件
+        # 1. 渲染图表到临时HTML文件，使用离线模式
         with tempfile.NamedTemporaryFile(suffix='.html', delete=False, mode='w', encoding='utf-8') as temp_file:
-            chart.render(path=temp_file.name, template_name="simple_chart.html", echarts_js="")  # echarts_js设为空
+            chart.render(path=temp_file.name, template_name="simple_chart.html", echarts_js="")
 
         # 2. 读取临时HTML文件内容
         with open(temp_file.name, 'r', encoding='utf-8') as f:
@@ -80,7 +98,6 @@ class CodeTemplate(QWidget):
         # 3. 将ECharts JS内容嵌入到HTML的<head>标签中，并设置body背景色
         head_end_index = html_content.find('</head>')
         if head_end_index != -1:
-
             # 在head中添加自定义CSS样式设置body背景色以及padding和margin为0
             custom_style = '''
             <style>
@@ -118,10 +135,13 @@ class CodeTemplate(QWidget):
             custom_style = '<style>body { background-color: #001940 !important; }</style>'
             modified_html = (html_content[:body_start_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[body_start_index:])
+                             
         # 4. 在WebView中显示修改后的HTML
+        print("正在加载HTML内容到Web视图...")
         self.web_view.setHtml(modified_html, baseUrl=QtCore.QUrl.fromLocalFile(temp_file.name))
         # 5. 删除临时文件
         os.unlink(temp_file.name)
+        print("HTML内容加载完成")
 
 
 if __name__ == "__main__":

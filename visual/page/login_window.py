@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt, QEasingCurve, QPropertyAnimation, QRect
 from PyQt6.QtGui import QFont, QPalette, QColor, QPainter, QPixmap, QIcon
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QGraphicsDropShadowEffect, QApplication, QFrame, QCheckBox
 
-from visual.page.visual import Visual
+from visual.page.visual_window import Visual
 from visual.page.register_window import RegisterWindow
 
 
