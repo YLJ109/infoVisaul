@@ -24,6 +24,7 @@ class Visual(QWidget):
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         self.showFullScreen()
         companyTypeSalaryVisualization = CompanyTypeSalaryVisualization()
+
         educationSalaryVisualization = EducationSalaryVisualization()
         experienceRequirementDistributionVisualization = ExperienceRequirementDistributionVisualization()
         jobTypeKeyRequirementsVisualization = JobTypeKeyRequirementsVisualization()
@@ -45,14 +46,19 @@ class Visual(QWidget):
         bottom_layout.setSpacing(0)
         bottom_layout.setContentsMargins(0, 0, 0, 0)
 
-        title_label = QLabel("\\\\\  奥特曼就业市场洞察系统  ///")
+        title_label = QLabel("\\\\\  一零九就业市场洞察系统  ///")
         title_label.setStyleSheet("""
             color: #00ffff;
             font-size: 25px;
             font-weight: bold;
-            background-color: #000b29;  /* 半透科技感深蓝背景 */
+            background-color: rbg(0, 25, 64);  /* 半透科技感深蓝背景 */
             text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
             letter-spacing: 2px;
+            border-bottom: 1px solid #0d577f;
+            border-style: solid;  /* 显式设置边框样式（关键） */
+            border-top: none;     /* 隐藏上边框，只保留底部边框 */
+            border-left: none;    /* 隐藏左边框 */
+            border-right: none;   /* 隐藏右边框 */
         """)
 
         title_label.setFixedHeight(80)

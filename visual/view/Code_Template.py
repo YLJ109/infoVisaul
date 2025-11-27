@@ -17,11 +17,12 @@ class CodeTemplate(QWidget):
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
         self.win_w = 470
-        self.win_h = 370
+        self.win_h = 380
         self.web_bg_color = "#001940"  # 科技感深蓝背景
+        # 移除固定尺寸设置，允许窗口根据内容调整大小
         # self.setFixedSize(self.win_w+20, self.win_h+20)
-        self.setMinimumHeight(self.win_h+20)
-        self.setMinimumWidth(self.win_w+20)
+        # self.setMinimumHeight(self.win_h+10)
+        # self.setMinimumWidth(self.win_w+20)
         self.data_path = setting.data_path # 数据文件路径
         self.echarts_js_path = setting.echarts_js_path # ECharts JS 文件路径
         self.echarts_js_content = self._load_echarts_js()   # 读取 ECharts JS 内容
@@ -36,6 +37,7 @@ class CodeTemplate(QWidget):
         main_layout.setContentsMargins(0, 0, 0, 0)
         # 创建网页视图用于显示图表
         self.web_view = QWebEngineView()
+
         # 设置WebEngine的参数，解决可能的显示问题
         self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessRemoteUrls, True)
         self.web_view.settings().setAttribute(self.web_view.settings().WebAttribute.LocalContentCanAccessFileUrls, True)
@@ -78,10 +80,38 @@ class CodeTemplate(QWidget):
         # 3. 将ECharts JS内容嵌入到HTML的<head>标签中，并设置body背景色
         head_end_index = html_content.find('</head>')
         if head_end_index != -1:
+
             # 在head中添加自定义CSS样式设置body背景色以及padding和margin为0
-            custom_style = '<style>body { background-color: #001940 !important; border:1px solid #0d577f; padding:0px !important; margin:5px !important;}</style>'
+            custom_style = '''
+            <style>
+            body {
+                background-color: #001940 !important;
+                border: 1px solid #0d577f;
+                padding: 0px !important;
+                margin: 5px !important;
+                overflow: hidden !important;  /* 核心1：禁止页面滚动（横向+纵向） */
+                overflow-x: hidden !important; /* 单独禁止横向滚动（冗余但更稳妥） */
+                overflow-y: hidden !important; /* 单独禁止纵向滚动（冗余但更稳妥） */
+            }
+
+            /* 核心2：隐藏 Chrome 内核滚动条（QWebEngineView 基于 Chromium） */
+            ::-webkit-scrollbar {
+                width: 0px !important;  /* 纵向滚动条宽度设为0 */
+                height: 0px !important; /* 横向滚动条高度设为0 */
+                display: none !important; /* 强制隐藏滚动条 */
+            }
+
+            /* 隐藏滚动条轨道和滑块（防止残留） */
+            ::-webkit-scrollbar-track,
+            ::-webkit-scrollbar-thumb {
+                display: none !important;
+                background: transparent !important;
+            }
+            </style>
+            '''
             modified_html = (html_content[:head_end_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[head_end_index:])
+
         else:
             # 如果没有</head>标签，就加在<body>前面
             body_start_index = html_content.find('<body>')
