@@ -26,8 +26,8 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
         bar = Bar(
             init_opts=opts.InitOpts(
                 theme=ThemeType.DARK,
-                width=f"{self.win_w-40}px",
-                height=f"{self.win_h-40}px",
+                width=f"{self.win_w}px",
+                height=f"{self.win_h}px",
                 bg_color=self.web_bg_color  # 深蓝色科技感背景
             )
         )
@@ -38,6 +38,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                           is_show=True,
                           position="top",
                           color="#00ffff"  # 科技蓝白色标签文字
+
                       )
                       )
         bar.set_global_opts(
@@ -56,7 +57,8 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 textstyle_opts=opts.TextStyleOpts(
                     font_size=12,
                     color="#00ffff"  # 科技蓝白色图例文字
-                )
+                ),
+                border_width=0
             ),
             xaxis_opts=opts.AxisOpts(
                 type_="category",

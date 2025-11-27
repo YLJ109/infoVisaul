@@ -1,17 +1,18 @@
-# 岗位类型与关键条件交叉分析
-# 散点图 / 交叉表可视化
+# 经验、行业与薪资多维度交叉可视化
+# 热力图
 import sys
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMessageBox
 import pyecharts.options as opts
-from pyecharts.charts import Scatter
+from pyecharts.charts import HeatMap
 from pyecharts.globals import ThemeType
 from visual.view.Code_Template import CodeTemplate
+
 
 class JobTypeKeyRequirementsVisualization(CodeTemplate):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("岗位类型与关键条件交叉分析")
+        self.setWindowTitle("经验、行业与薪资交叉分析")
 
     def load_data(self):
         """加载数据"""
@@ -19,80 +20,120 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             # 读取CSV文件
             self.df = pd.read_csv(self.data_path, encoding='utf-8')
             # 清理数据，去除空值
-            self.df = self.df.dropna(subset=['工作名称', '关键词'])
+            self.df = self.df.dropna(subset=['经验要求', '关键词', '薪资'])
+            
+            # 处理薪资范围数据，提取平均值作为代表
+            def extract_salary_avg(salary_str):
+                if pd.isna(salary_str):
+                    return None
+                try:
+                    # 分割薪资范围字符串
+                    parts = str(salary_str).split('-')
+                    if len(parts) == 2:
+                        low = int(parts[0])
+                        high = int(parts[1])
+                        return (low + high) / 2  # 返回平均值
+                    else:
+                        # 如果不是范围格式，尝试直接转换为整数
+                        return int(salary_str)
+                except:
+                    return None
+            
+            # 应用薪资处理函数
+            self.df['薪资'] = self.df['薪资'].apply(extract_salary_avg)
+            
+            # 再次去除转换后产生的空值
+            self.df = self.df.dropna()
+            
         except Exception as e:
             print(f"数据加载失败: {e}")
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
     def create_job_count_chart(self):
-        """创建岗位类型与关键条件交叉分析散点图"""
-        # 提取岗位类型和关键词数据
-        job_requirements_data = self.df[['工作名称', '关键词']].copy()
+        """创建经验、行业与薪资交叉分析热力图"""
+        # 检查数据是否为空
+        if self.df.empty:
+            print("数据为空，无法生成图表")
+            return None
+
+        # 提取经验要求、关键词和薪资数据
+        exp_salary_data = self.df[['经验要求', '关键词', '薪资']].copy()
         
-        # 数据预处理：提取前10个最常见的岗位类型
-        top_job_types = job_requirements_data['工作名称'].value_counts().head(10).index.tolist()
-        job_requirements_data = job_requirements_data[job_requirements_data['工作名称'].isin(top_job_types)]
+        # 数据预处理：提取前10个最常见的经验要求
+        top_experience = exp_salary_data['经验要求'].value_counts().head(10).index.tolist()
+        exp_salary_data = exp_salary_data[exp_salary_data['经验要求'].isin(top_experience)]
         
-        # 数据预处理：提取前10个最常见的关键词
+        # 数据预处理：提取前10个最常见的关键词作为行业标识
         all_keywords = []
-        for keywords in job_requirements_data['关键词']:
+        for keywords in exp_salary_data['关键词']:
             if isinstance(keywords, str):
                 all_keywords.extend([kw.strip() for kw in keywords.split(',') if kw.strip()])
         
-        top_keywords = pd.Series(all_keywords).value_counts().head(10).index.tolist()
+        top_industries = pd.Series(all_keywords).value_counts().head(10).index.tolist()
         
-        # 构建交叉表数据
-        scatter_data = []
-        for job_type in top_job_types:
-            job_data = job_requirements_data[job_requirements_data['工作名称'] == job_type]
-            total_jobs = len(job_data)
+        # 构建热力图数据
+        heatmap_data = []
+        for experience in top_experience:
+            exp_data = exp_salary_data[exp_salary_data['经验要求'] == experience]
             
-            # 统计每个关键词在该岗位类型中的出现次数
-            keyword_counts = {}
-            for keywords in job_data['关键词']:
+            # 统计每个关键词在该经验要求下的平均薪资
+            industry_salary = {}
+            industry_count = {}
+            
+            for _, row in exp_data.iterrows():
+                keywords = row['关键词']
+                salary = row['薪资']
+                
                 if isinstance(keywords, str):
                     for kw in keywords.split(','):
                         kw = kw.strip()
-                        if kw in top_keywords:
-                            keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
+                        if kw in top_industries:
+                            if kw not in industry_salary:
+                                industry_salary[kw] = 0
+                                industry_count[kw] = 0
+                            industry_salary[kw] += salary
+                            industry_count[kw] += 1
             
-            # 计算关键词在该岗位中的占比
-            for keyword in top_keywords:
-                count = keyword_counts.get(keyword, 0)
-                # 使用百分比作为散点图的值
-                percentage = round((count / total_jobs * 100) if total_jobs > 0 else 0, 2)
-                scatter_data.append([job_type, keyword, percentage])
-        
-        # 创建散点图
-        scatter = Scatter(
+            # 计算平均薪资
+            for industry in top_industries:
+                if industry in industry_salary and industry_count[industry] > 0:
+                    avg_salary = round(industry_salary[industry] / industry_count[industry], 2)
+                    heatmap_data.append([experience, industry, avg_salary])
+                else:
+                    heatmap_data.append([experience, industry, 0])
+
+        # 创建热力图
+        heatmap = HeatMap(
             init_opts=opts.InitOpts(
                 theme=ThemeType.DARK,
-                width=f"{self.win_w-40}px",
-                height=f"{self.win_h-40}px",
+                width=f"{self.win_w}px",
+                height=f"{self.win_h}px",
                 bg_color=self.web_bg_color  # 科技感背景色
             )
         )
-        
-        # 准备散点图数据
-        x_data = [item[0] for item in scatter_data]  # 岗位类型
-        y_data = [item[1] for item in scatter_data]  # 关键词
-        size_data = [item[2] * 5 for item in scatter_data]  # 百分比作为点的大小，放大5倍便于观察
 
         # 添加数据
-        scatter.add_xaxis(x_data)
-        scatter.add_yaxis(
-            series_name="关键词出现频率",
-            y_axis=[list(z) for z in zip(y_data, size_data)],  # 同时传递y轴数据和点大小
-            label_opts=opts.LabelOpts(is_show=False, color="#00ffff"),  # 科技感青蓝色
-            itemstyle_opts=opts.ItemStyleOpts(color="#1f77b4"),  # 设置点的颜色
-            encode={"tooltip": [0, 1, 2]}  # 编码提示框显示内容
+        heatmap.add_xaxis(top_experience)
+        heatmap.add_yaxis(
+            series_name="平均薪资",
+            yaxis_data=top_industries,
+            value=heatmap_data,
+            label_opts=opts.LabelOpts(is_show=True, color="#00ffff", formatter="{@[2]}"),  # 显示薪资数值
+            itemstyle_opts=opts.ItemStyleOpts(border_width=1, border_color="#00ffff")
         )
 
+        # 计算最大薪资值，用于可视化映射
+        max_salary = 100  # 默认值
+        if heatmap_data:
+            max_salary = max([item[2] for item in heatmap_data])
+            max_salary = max_salary if max_salary > 0 else 100  # 确保最大值大于0
+
         # 全局配置
-        scatter.set_global_opts(
+        heatmap.set_global_opts(
             title_opts=opts.TitleOpts(
-                title="岗位类型与关键技能交叉分析",
+                title="经验要求-行业关键词薪资热力图",
+
                 title_textstyle_opts=opts.TextStyleOpts(
                     font_size=18,
                     font_weight="bold",
@@ -103,13 +144,13 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             ),
             visualmap_opts=opts.VisualMapOpts(
                 is_show=True,
-                type_="size",
+                type_="color",
                 min_=0,
-                max_=50,
-                range_size=[10, 50],
+                max_=max_salary,
+                range_color=["#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8", "#ffffbf", "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"],
                 orient="horizontal",
                 pos_left="center",
-                pos_top="5%",
+                pos_bottom="0%",
                 is_calculable=True
             ),
             xaxis_opts=opts.AxisOpts(
@@ -123,12 +164,12 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="item",
-                formatter="{a} <br/>{b0}: {c0}<br/>{b1}: {c1}%"
+                formatter="{a} <br/>{b0} -> {b1} <br/>平均薪资: {c}元"
             ),
-            legend_opts=opts.LegendOpts(is_show=False)
+            legend_opts=opts.LegendOpts(is_show=False,border_width=0)
         )
         
-        return scatter
+        return heatmap
 
 
 if __name__ == "__main__":

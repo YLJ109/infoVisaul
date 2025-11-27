@@ -33,8 +33,8 @@ class RegionalJobVisualization(CodeTemplate):
         line = Line(
             init_opts=opts.InitOpts(
                 theme=ThemeType.DARK,
-                width=f"{self.win_w-40}px",
-                height=f"{self.win_h-40}px",
+                width=f"{self.win_w}px",
+                height=f"{self.win_h}px",
                 bg_color=self.web_bg_color  # 科技感背景色
             )
         )
@@ -45,18 +45,19 @@ class RegionalJobVisualization(CodeTemplate):
         # 添加Y轴数据
         line.add_yaxis(
             series_name="岗位数量",
+
             y_axis=region_counts.values.tolist(),
             label_opts=opts.LabelOpts(is_show=True, position="top", 
                                     font_family="微软雅黑", font_size=12,
-                                    color="#00ffff"),  # 科技感青蓝色
+                                    color="#00ffff",border_width=0),  # 科技感青蓝色
             linestyle_opts=opts.LineStyleOpts(width=3, color="#1f77b4",
                                             type_="solid"),
             symbol_size=8,
             is_smooth=True,  # 平滑曲线
             symbol="circle",
-            itemstyle_opts=opts.ItemStyleOpts(color="#1f77b4", border_width=2,
-                                            border_color="#00ffff"),  # 科技感青蓝色
+            itemstyle_opts=opts.ItemStyleOpts(color="#1f77b4",border_width=0),  # 移除了border_width和border_color
             areastyle_opts=opts.AreaStyleOpts(opacity=0.3, color="#1f77b4")
+
         )
 
         # 设置全局配置
@@ -64,22 +65,25 @@ class RegionalJobVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="地区岗位分布曲线图",
                 title_textstyle_opts=opts.TextStyleOpts(
-                    font_size=20,
+                    font_size=18,
                     font_weight="bold",
                     font_family="微软雅黑",
                     color="#00ffff"  # 科技感青蓝色
                 ),
+
                 subtitle_textstyle_opts=opts.TextStyleOpts(
                     font_size=14,
                     font_family="微软雅黑",
                     color="#00ffff"  # 科技感青蓝色
+                    ,border_width=0
                 ),
-                pos_top="20px"
+                pos_top="10px"
+
             ),
             xaxis_opts=opts.AxisOpts(
                 type_="category",
                 axislabel_opts=opts.LabelOpts(rotate=30, font_family="微软雅黑",
-                                            font_size=12, color="#00ffff"),  # 科技感青蓝色
+                                            font_size=12, color="#00ffff",border_width=0),  # 科技感青蓝色
                 axisline_opts=opts.AxisLineOpts(is_show=True,
                                               linestyle_opts=opts.LineStyleOpts(color="#00ffff")),  # 科技感青蓝色
                 axistick_opts=opts.AxisTickOpts(is_show=True)
@@ -87,9 +91,9 @@ class RegionalJobVisualization(CodeTemplate):
             yaxis_opts=opts.AxisOpts(
                 type_="value",
                 name_textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",
-                                                     font_size=14, color="#00ffff"),  # 科技感青蓝色
+                                                     font_size=14, color="#00ffff",border_width=0),  # 科技感青蓝色
                 axislabel_opts=opts.LabelOpts(font_family="微软雅黑", font_size=12,
-                                            color="#00ffff"),  # 科技感青蓝色
+                                            color="#00ffff",border_width=0),  # 科技感青蓝色
                 axisline_opts=opts.AxisLineOpts(is_show=True,
                                               linestyle_opts=opts.LineStyleOpts(color="#00ffff")),  # 科技感青蓝色
                 splitline_opts=opts.SplitLineOpts(is_show=True,
@@ -98,10 +102,10 @@ class RegionalJobVisualization(CodeTemplate):
             tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line",
                                         background_color="rgba(0, 0, 0, 0.7)",
                                         border_color="#00ffff",  # 科技感青蓝色
-                                        border_width=1),
-            legend_opts=opts.LegendOpts(pos_top="60px",
+                                        border_width=0),
+            legend_opts=opts.LegendOpts(pos_top="40px",
                                       textstyle_opts=opts.TextStyleOpts(font_family="微软雅黑",
-                                                                      color="#00ffff")),  # 科技感青蓝色
+                                                                      color="#00ffff",border_width=0),border_width=0),  # 科技感青蓝色
 
         )
         

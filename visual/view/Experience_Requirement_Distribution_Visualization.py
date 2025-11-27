@@ -45,7 +45,7 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         experience_percentages = (experience_counts / total) * 100
 
         # 创建折线图
-        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w-40}px", height=f"{self.win_h-40}px", bg_color=self.web_bg_color))  # 科技感背景色
+        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color=self.web_bg_color))  # 科技感背景色
 
         # 添加X轴
         line.add_xaxis(experience_percentages.index.tolist())
@@ -67,6 +67,7 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
             ),
             legend_opts=opts.LegendOpts(
                 pos_top="10%",
+                border_width=0,
                 textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             xaxis_opts=opts.AxisOpts(

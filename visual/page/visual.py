@@ -18,7 +18,7 @@ class Visual(QWidget):
         
     def init_ui(self):
 
-        self.setWindowTitle('奥特曼招聘信息可视化平台')
+        self.setWindowTitle('奥特曼就业市场洞察系统')
         self.setGeometry(100, 100, 1300, 700)
         # 设置窗口图标
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
@@ -45,7 +45,7 @@ class Visual(QWidget):
         bottom_layout.setSpacing(0)
         bottom_layout.setContentsMargins(0, 0, 0, 0)
 
-        title_label = QLabel("奥特曼招聘信息可视化平台")
+        title_label = QLabel("\\\\\  奥特曼就业市场洞察系统  ///")
         title_label.setStyleSheet("""
             color: #00ffff;
             font-size: 25px;
@@ -54,7 +54,8 @@ class Visual(QWidget):
             text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
             letter-spacing: 2px;
         """)
-        title_label.setFixedHeight(70)
+
+        title_label.setFixedHeight(80)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         top_layout.addWidget(companyTypeSalaryVisualization)

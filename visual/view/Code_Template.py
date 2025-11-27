@@ -16,10 +16,12 @@ class CodeTemplate(QWidget):
         """)
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
-        self.win_w = 500
-        self.win_h = 420
+        self.win_w = 470
+        self.win_h = 370
         self.web_bg_color = "#001940"  # 科技感深蓝背景
-        self.setGeometry(100, 100, self.win_w, self.win_h)
+        # self.setFixedSize(self.win_w+20, self.win_h+20)
+        self.setMinimumHeight(self.win_h+20)
+        self.setMinimumWidth(self.win_w+20)
         self.data_path = setting.data_path # 数据文件路径
         self.echarts_js_path = setting.echarts_js_path # ECharts JS 文件路径
         self.echarts_js_content = self._load_echarts_js()   # 读取 ECharts JS 内容
@@ -77,13 +79,13 @@ class CodeTemplate(QWidget):
         head_end_index = html_content.find('</head>')
         if head_end_index != -1:
             # 在head中添加自定义CSS样式设置body背景色以及padding和margin为0
-            custom_style = '<style>body { background-color: #001940 !important;border:1px solid #0d577f; }</style>'
+            custom_style = '<style>body { background-color: #001940 !important; border:1px solid #0d577f; padding:0px !important; margin:5px !important;}</style>'
             modified_html = (html_content[:head_end_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[head_end_index:])
         else:
             # 如果没有</head>标签，就加在<body>前面
             body_start_index = html_content.find('<body>')
-            custom_style = '<style>body { background-color: #001940 !important; padding: 0; margin: 0; }</style>'
+            custom_style = '<style>body { background-color: #001940 !important; }</style>'
             modified_html = (html_content[:body_start_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
                              + html_content[body_start_index:])
         # 4. 在WebView中显示修改后的HTML
