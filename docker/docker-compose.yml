@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  infovisaul:
+    build: .
+    image: infovisaul:latest
+    container_name: infovisaul_app
+    ports:
+      - "5900:5900"
+    volumes:
+      - ./data:/app/data
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+    privileged: true
