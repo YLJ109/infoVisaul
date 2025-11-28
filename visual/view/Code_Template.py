@@ -16,17 +16,20 @@ class CodeTemplate(QWidget):
         super().__init__()
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
-        self.win_w = 500
-        self.win_h = 360
+        # 获取当前窗口所在的屏幕
+        current_screen = self.screen()  # QWidget 自带的 screen() 方法
+        # 获取该屏幕的可用宽度
+        current_screen_width = current_screen.availableGeometry().width()
+        current_screen_height = current_screen.availableGeometry().height()
+
+        self.win_w = current_screen_width//3-10
+        self.win_h = current_screen_height//2-50
         self.web_bg_color = "#001940"  # 科技感深蓝背景
-        # 移除固定尺寸设置，允许窗口根据内容调整大小
-        # self.setFixedSize(self.win_w+20, self.win_h+20)
-        # self.setMinimumHeight(self.win_h+10)
-        # self.setMinimumWidth(self.win_w+20)
+
         self.data_path = setting.data_path # 数据文件路径
         self.echarts_js_path = setting.echarts_js_path # ECharts JS 文件路径
         self.china_geo_path = getattr(setting, 'china_geo_path', None) # China Geo 文件路径
-        
+
         self.echarts_js_content = self._load_echarts_js()   # 读取 ECharts JS 内容
         self.init_ui() # 初始化UI
         self.load_data()    # 加载数据
@@ -46,7 +49,7 @@ class CodeTemplate(QWidget):
                 background-color: transparent;
                 border: none;
                 padding-left:10px;
-                border: 1px solid #0d577f;
+                border: 1px solid rgb(0, 255, 255);
                 margin-left:5px;
                 margin-right:5px;
                 
@@ -63,10 +66,10 @@ class CodeTemplate(QWidget):
         # 设置WebEngine的参数，解决可能的显示问题
         self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
         self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
-        
-        # 禁用WebGL和硬件加速以提高兼容性
-        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, False)
-        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, False)
+
+        # 启用WebGL和硬件加速以支持3D图表
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, True)
+        self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, True)
 
         main_layout.addWidget(self.web_view, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.enlarge_chart_button)
@@ -76,14 +79,14 @@ class CodeTemplate(QWidget):
         try:
             with open(self.echarts_js_path, 'r', encoding='utf-8') as f:
                 echarts_content = f.read()
-                
+
             # 如果有单独的地理数据文件，也加载它
             if self.china_geo_path and os.path.exists(self.china_geo_path):
                 with open(self.china_geo_path, 'r', encoding='utf-8') as f:
                     geo_content = f.read()
                 # 将地理数据附加到echarts内容后面
                 echarts_content = echarts_content + ";\n" + geo_content
-                
+
             return echarts_content
         except Exception as e:
             QMessageBox.warning(self, "警告", f"无法加载 ECharts JS 文件: {str(e)}", QMessageBox.StandardButton.Ok)
@@ -118,42 +121,116 @@ class CodeTemplate(QWidget):
         head_end_index = html_content.find('</head>')
         if head_end_index != -1:
             # 在head中添加自定义CSS样式设置body背景色以及padding和margin为0
-            custom_style = '''
-            <style>
-            body {
-                background-color: #001940 !important;
-                border: 1px solid #0d577f;
-                padding: 0px !important;
-                margin: 5px !important;
-                overflow: hidden !important;  /* 核心1：禁止页面滚动（横向+纵向） */
-                overflow-x: hidden !important; /* 单独禁止横向滚动（冗余但更稳妥） */
-                overflow-y: hidden !important; /* 单独禁止纵向滚动（冗余但更稳妥） */
-            }
-
-            /* 核心2：隐藏 Chrome 内核滚动条（QWebEngineView 基于 Chromium） */
-            ::-webkit-scrollbar {
-                width: 0px !important;  /* 纵向滚动条宽度设为0 */
-                height: 0px !important; /* 横向滚动条高度设为0 */
-                display: none !important; /* 强制隐藏滚动条 */
-            }
-
-            /* 隐藏滚动条轨道和滑块（防止残留） */
-            ::-webkit-scrollbar-track,
-            ::-webkit-scrollbar-thumb {
-                display: none !important;
-                background: transparent !important;
-            }
-            </style>
+            custom_style = f'''
+            <link rel="stylesheet" type="text/css" href="{os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'css', 'style.css').replace(os.sep, '/')}" />
             '''
+            # 添加JavaScript来创建随机粒子效果
+            particle_script = f'''
+            <script src="{os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'js', 'visual.js').replace(os.sep, '/')}"></script>
+            '''
+
             modified_html = (html_content[:head_end_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
-                             + html_content[head_end_index:])
+                             + particle_script + html_content[head_end_index:])
 
         else:
             # 如果没有</head>标签，就加在<body>前面
             body_start_index = html_content.find('<body>')
-            custom_style = '<style>body { background-color: #001940 !important; }</style>'
+            custom_style = f'''
+            <link rel="stylesheet" type="text/css" href="{os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'css', 'style.css').replace(os.sep, '/')}" />
+            '''
+            # 添加JavaScript来创建随机粒子效果
+            particle_script = '''
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 创建随机粒子
+                function createParticles() {
+                    const particleCount = 40;
+                    for (let i = 0; i < particleCount; i++) {
+                        setTimeout(createParticle, i * 300); // 每300毫秒创建一个粒子
+                    }
+                }
+                
+                // 创建单个粒子
+                function createParticle() {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    // 随机大小 (1px 到 4px)
+                    const size = Math.random() * 3 + 1;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // 随机初始位置
+                    const startX = Math.random() * 100;
+                    const startY = Math.random() * 100;
+                    particle.style.left = `${startX}%`;
+                    particle.style.top = `${startY}%`;
+                    
+                    // 随机颜色
+                    const colors = [
+                        'rgba(0, 255, 255, 0.8)',   // 青色
+                        'rgba(0, 200, 255, 0.6)',   // 蓝青色
+                        'rgba(0, 150, 255, 0.5)'    // 蓝色
+                    ];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.background = color;
+                    particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+                    
+                    // 随机动画参数
+                    const duration = Math.random() * 20 + 10; // 10-30秒
+                    const xOffset = (Math.random() - 0.5) * 200; // -100px 到 100px
+                    const yOffset = (Math.random() - 0.5) * 200; // -100px 到 100px
+                    const rotation = Math.random() * 360; // 0-360度
+                    
+                    // 应用动画
+                    particle.style.animation = `floatRandom ${duration}s linear infinite`;
+                    particle.style.setProperty('--x-offset', `${xOffset}px`);
+                    particle.style.setProperty('--y-offset', `${yOffset}px`);
+                    particle.style.setProperty('--rotation', `${rotation}deg`);
+                    
+                    document.body.appendChild(particle);
+                    
+                    // 粒子生命周期结束后移除
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, duration * 1000);
+                }
+                
+                // 添加粒子动画关键帧
+                function addParticleAnimation() {
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        @keyframes floatRandom {
+                            0% { 
+                                transform: translate(0, 0) rotate(0deg);
+                                opacity: 0;
+                            }
+                            10% { opacity: 1; }
+                            90% { opacity: 1; }
+                            100% { 
+                                transform: translate(var(--x-offset, 0), var(--y-offset, 0)) rotate(var(--rotation, 360deg));
+                                opacity: 0;
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+                
+                // 初始化粒子动画
+                addParticleAnimation();
+                
+                // 初始化粒子
+                createParticles();
+                
+                // 定期创建新粒子以保持效果
+                setInterval(createParticle, 800);
+            });
+            </script>
+            '''
             modified_html = (html_content[:body_start_index] + f'<script>{self.echarts_js_content}</script>' + custom_style
-                             + html_content[body_start_index:])
+                             + particle_script + html_content[body_start_index:])
                              
         # 4. 在WebView中显示修改后的HTML
         self.web_view.setHtml(modified_html, baseUrl=QtCore.QUrl.fromLocalFile(temp_file.name))

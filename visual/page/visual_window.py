@@ -88,7 +88,7 @@ class Visual(QWidget):
             background-color: rbg(0, 25, 64);  /* 半透科技感深蓝背景 */
             text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
             letter-spacing: 2px;
-            border-bottom: 1px solid #0d577f;
+            border-bottom: 1px solid rgb(0, 255, 255);
             border-style: solid;  /* 显式设置边框样式（关键） */
             border-top: none;     /* 隐藏上边框，只保留底部边框 */
             border-left: none;    /* 隐藏左边框 */

@@ -132,7 +132,7 @@ class SalaryRangeVisualization(CodeTemplate):
                 })
 
         # 创建桑基图
-        sankey = Sankey(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color=self.web_bg_color))  # 科技感背景色
+        sankey = Sankey(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color="transparent"))  # 改为透明背景
 
         sankey.add(
             series_name="薪资区间分布",

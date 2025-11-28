@@ -1,0 +1,47 @@
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes bgColorShift {
+    0% { background: radial-gradient(circle at center, #001940 0%, #002850 70%); }
+    25% { background: radial-gradient(circle at center, #001940 0%, #003060 70%); }
+    50% { background: radial-gradient(circle at center, #001940 0%, #002850 70%); }
+    75% { background: radial-gradient(circle at center, #001940 0%, #002045 70%); }
+    100% { background: radial-gradient(circle at center, #001940 0%, #002850 70%); }
+}
+
+body {
+    background-color: rgb(0, 25, 64) !important;
+    border: 1px solid #00ffff;
+    box-shadow:
+        0 0 5px rgba(0, 255, 255, 0.5),
+        inset 0 0 5px rgba(0, 255, 255, 0.5);
+    padding: 0px !important;
+    margin: 5px !important;
+    overflow: hidden !important;
+    position: relative;
+}
+
+/* 中间区域添加渐变动效 */
+body::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background: linear-gradient(270deg, #001940, #002850, #003060, #002045, #001940);
+    background-size: 500% 500%;
+    animation: gradientFlow 8s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+}

@@ -69,7 +69,7 @@ class EducationSalaryVisualization(CodeTemplate):
         pie_data = [list(z) for z in zip(grouped_data['学历'], grouped_data['平均薪资'].round(2))]
 
         # 创建饼状图
-        pie = Pie(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color=self.web_bg_color))  # 科技感背景色
+        pie = Pie(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color="transparent"))  # 改为透明背景
 
         # 添加数据
         pie.add(

@@ -28,7 +28,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 theme=ThemeType.DARK,
                 width=f"{self.win_w}px",
                 height=f"{self.win_h}px",
-                bg_color=self.web_bg_color  # 深蓝色科技感背景
+                bg_color="transparent"  # 改为透明背景，以便显示底层特效背景
             )
         )
         bar.add_xaxis(company_counts.index.tolist())

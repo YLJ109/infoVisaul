@@ -1,4 +1,4 @@
-# 经验、行业与薪资多维度交叉可视化
+# 岗位类型与关键条件交叉分析
 # 热力图
 import sys
 import pandas as pd
@@ -12,7 +12,7 @@ from visual.view.Code_Template import CodeTemplate
 class JobTypeKeyRequirementsVisualization(CodeTemplate):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("经验、行业与薪资交叉分析")
+        self.setWindowTitle("岗位类型与关键条件交叉分析")
 
     def load_data(self):
         """加载数据"""
@@ -46,14 +46,13 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             
             # 再次去除转换后产生的空值
             self.df = self.df.dropna()
-            
         except Exception as e:
             print(f"数据加载失败: {e}")
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
     def create_job_count_chart(self):
-        """创建经验、行业与薪资交叉分析热力图"""
+        """创建岗位类型与关键条件交叉分析热力图"""
         # 检查数据是否为空
         if self.df.empty:
             print("数据为空，无法生成图表")
@@ -75,8 +74,8 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
         top_industries = pd.Series(all_keywords).value_counts().head(10).index.tolist()
         
         # 构建热力图数据
-        heatmap_data = []
-        for experience in top_experience:
+        data = []
+        for i, experience in enumerate(top_experience):
             exp_data = exp_salary_data[exp_salary_data['经验要求'] == experience]
             
             # 统计每个关键词在该经验要求下的平均薪资
@@ -87,57 +86,55 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                 keywords = row['关键词']
                 salary = row['薪资']
                 
-                if isinstance(keywords, str):
+                # 确保salary是数值类型
+                if isinstance(salary, (int, float)) and isinstance(keywords, str):
                     for kw in keywords.split(','):
                         kw = kw.strip()
                         if kw in top_industries:
                             if kw not in industry_salary:
-                                industry_salary[kw] = 0
+                                industry_salary[kw] = 0.0
                                 industry_count[kw] = 0
-                            industry_salary[kw] += salary
+                            industry_salary[kw] += float(salary)
                             industry_count[kw] += 1
             
-            # 计算平均薪资
-            for industry in top_industries:
+            # 计算平均薪资并转换为K单位
+            for j, industry in enumerate(top_industries):
                 if industry in industry_salary and industry_count[industry] > 0:
-                    avg_salary = round(industry_salary[industry] / industry_count[industry], 2)
-                    heatmap_data.append([experience, industry, avg_salary])
+                    avg_salary = round(industry_salary[industry] / industry_count[industry] / 1000)  # 转换为K单位
+                    data.append([i, j, avg_salary])
                 else:
-                    heatmap_data.append([experience, industry, 0])
+                    data.append([i, j, 0])
 
         # 创建热力图
-        heatmap = HeatMap(
-            init_opts=opts.InitOpts(
-                theme=ThemeType.DARK,
-                width=f"{self.win_w}px",
-                height=f"{self.win_h}px",
-                bg_color=self.web_bg_color  # 科技感背景色
+        heatmap = HeatMap(init_opts=opts.InitOpts(
+            theme=ThemeType.DARK, 
+            width=f"{self.win_w}px", 
+            height=f"{self.win_h}px", 
+            bg_color="transparent"
+        ))
+        
+        x_data = top_experience
+        y_data = top_industries
+
+        # 添加数据
+        heatmap.add_xaxis(x_data)
+        heatmap.add_yaxis(
+            series_name="平均薪资(K)",
+            yaxis_data=y_data,
+            value=data,
+            itemstyle_opts=opts.ItemStyleOpts(color="#00ffff"),
+            label_opts=opts.LabelOpts(
+                is_show=True,
+                color="#00ffff",
+                formatter="{@[2]}K"
             )
         )
 
-        # 添加数据
-        heatmap.add_xaxis(top_experience)
-        heatmap.add_yaxis(
-            series_name="平均薪资",
-            yaxis_data=top_industries,
-            value=heatmap_data,
-            label_opts=opts.LabelOpts(is_show=True, color="#00ffff", formatter="{@[2]}"),  # 显示薪资数值
-            itemstyle_opts=opts.ItemStyleOpts(border_width=1, border_color="#00ffff")
-        )
-
-        # 计算最大薪资值，用于可视化映射
-        max_salary = 100  # 默认值
-        if heatmap_data:
-            salaries = [item[2] for item in heatmap_data if item[2] > 0]
-            if salaries:
-                max_salary = max(salaries)
-            max_salary = max_salary if max_salary > 0 else 100  # 确保最大值大于0
-
         # 全局配置
+        max_salary = max([d[2] for d in data]) if data else 10
         heatmap.set_global_opts(
             title_opts=opts.TitleOpts(
-                title="经验要求-行业关键词薪资热力图",
-
+                title="岗位类型与关键条件交叉分析热力图",
                 title_textstyle_opts=opts.TextStyleOpts(
                     font_size=18,
                     font_weight="bold",
@@ -145,6 +142,8 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                     color="#00ffff"  # 科技感青蓝色
                 ),
                 pos_top="10px"
+
+
             ),
             visualmap_opts=opts.VisualMapOpts(
                 is_show=True,
@@ -154,23 +153,25 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                 range_color=["#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8", "#ffffbf", "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"],
                 orient="horizontal",
                 pos_left="center",
-                pos_bottom="0%",
-                is_calculable=True
-            ),
-            xaxis_opts=opts.AxisOpts(
-                type_="category",
-                axislabel_opts=opts.LabelOpts(rotate=45, font_size=11, color="#00ffff"),  # 科技感青蓝色
-                name_gap=5
-            ),
-            yaxis_opts=opts.AxisOpts(
-                type_="category",
-                axislabel_opts=opts.LabelOpts(font_size=11, color="#00ffff")  # 科技感青蓝色
+                pos_bottom="10%",
+                is_calculable=True,
+                is_piecewise=False,
+                border_width=0
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="item",
-                formatter="{a} <br/>{b0} -> {b1} <br/>平均薪资: {c}元"
             ),
-            legend_opts=opts.LegendOpts(is_show=False,border_width=0)
+            xaxis_opts=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(color="#00ffff"),
+            ),
+            yaxis_opts=opts.AxisOpts(
+                axislabel_opts=opts.LabelOpts(color="#00ffff"),
+            )
+            , legend_opts=opts.LegendOpts(
+                border_width=0,  # 边框宽度设为0，隐藏外框
+
+
+            )
         )
         
         return heatmap

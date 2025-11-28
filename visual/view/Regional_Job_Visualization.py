@@ -60,7 +60,7 @@ class RegionalJobVisualization(CodeTemplate):
                 theme=ThemeType.DARK,
                 width=f"{self.win_w}px",
                 height=f"{self.win_h}px",
-                bg_color=self.web_bg_color,  # 科技感背景色
+                bg_color="transparent",  # 改为透明背景
                 renderer="canvas"  # 强制使用canvas渲染器，避免WebGL问题
             )
         )

@@ -242,11 +242,14 @@ class LoginWindow(QWidget):
                 self.clear_saved_credentials()
             
             # 这里可以打开主应用窗口
-            self.main_window = Visual()
-            # 为可视化窗口设置图标
-            self.main_window.setWindowIcon(QIcon("./visual/static/img/icon.png"))
-            self.main_window.show()
-            self.close()
+            try:
+                self.main_window = Visual()
+                # 为可视化窗口设置图标
+                self.main_window.setWindowIcon(QIcon("./visual/static/img/icon.png"))
+                self.main_window.show()
+                self.close()
+            except Exception as e:
+                QMessageBox.critical(self, "错误", f"打开主窗口时发生错误：{str(e)}")
         else:
             QMessageBox.warning(self, "失败", "用户名或密码错误！")
     

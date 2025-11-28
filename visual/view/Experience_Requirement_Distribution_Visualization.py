@@ -45,18 +45,19 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         experience_percentages = (experience_counts / total) * 100
 
         # 创建折线图
-        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color=self.web_bg_color))  # 科技感背景色
+        line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color="transparent"))  # 改为透明背景
 
-        # 添加X轴
+        # 添加X轴和Y轴数据
         line.add_xaxis(experience_percentages.index.tolist())
-
-        # 添加Y轴数据
         line.add_yaxis(
             series_name="岗位占比",
-            y_axis=[round(val, 2) for val in experience_percentages.values.tolist()],
-            label_opts=opts.LabelOpts(is_show=True, position="top", formatter="{c}%", color="#00ffff"),  # 科技感青蓝色
+            y_axis=[round(val) for val in experience_percentages.values.tolist()],
+            symbol="circle",
             symbol_size=10,
-            is_smooth=True
+            is_smooth=True,  # 平滑曲线
+            label_opts=opts.LabelOpts(is_show=True, position="top", formatter="{c}%", color="#00ffff"),  # 科技感青蓝色
+            linestyle_opts=opts.LineStyleOpts(width=2, color="#00ffff"),
+            itemstyle_opts=opts.ItemStyleOpts(color="#00ffff")
         )
 
         # 全局配置
