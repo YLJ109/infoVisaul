@@ -21,24 +21,26 @@ class Visual(QWidget):
 
         self.setWindowTitle('一零九就业市场洞察系统')
         self.setGeometry(100, 100, 1300, 700)
-        self.w_chart = 500
-        self.h_chart = 360
         # 设置窗口图标
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         self.showFullScreen()
+
         companyTypeSalaryVisualization = CompanyTypeSalaryVisualization()
-        # 移除点击事件连接
         educationSalaryVisualization = EducationSalaryVisualization()
         experienceRequirementDistributionVisualization = ExperienceRequirementDistributionVisualization()
         jobTypeKeyRequirementsVisualization = JobTypeKeyRequirementsVisualization()
         regionalJobVisualization = RegionalJobVisualization()
         salaryRangeVisualization = SalaryRangeVisualization()
+
         companyTypeSalaryVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(companyTypeSalaryVisualization))
         educationSalaryVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(educationSalaryVisualization))
         experienceRequirementDistributionVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(experienceRequirementDistributionVisualization))
         jobTypeKeyRequirementsVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(jobTypeKeyRequirementsVisualization))
         regionalJobVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(regionalJobVisualization))
         salaryRangeVisualization.enlarge_chart_button.clicked.connect(lambda: self.enlarge_chart(salaryRangeVisualization))
+
+        self.w_chart = companyTypeSalaryVisualization.win_w
+        self.h_chart = companyTypeSalaryVisualization.win_h
 
         self.visual_lst = [companyTypeSalaryVisualization,
                       educationSalaryVisualization,
@@ -51,9 +53,7 @@ class Visual(QWidget):
             QWidget {
                 background-color: #001940;  /* 科技感深蓝背景作为备选 */
                 font-family: "微软雅黑";
-                
             }
- 
         """)
 
         top_layout = QHBoxLayout()
@@ -71,15 +71,14 @@ class Visual(QWidget):
             QPushButton {
                 background-color: transparent;
                 border: none;
+                border-radius:6px;
             }
             QPushButton:hover {
                 background-color: rgba(255, 255, 255, 0.1);
             }
         """)
-        # more_button.clicked.connect(self.toggle_fullscreen)
         more_button.setFixedSize(60, 60)
         more_button.setCursor(Qt.CursorShape.PointingHandCursor)
-
 
         title_label = QLabel("\\\\\\  一零九就业市场洞察系统  ///")
         title_label.setStyleSheet("""
@@ -99,12 +98,29 @@ class Visual(QWidget):
         title_label.setFixedHeight(80)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        close_button = QPushButton()
+        close_button.clicked.connect(self.close)
+        close_button.setIcon(QIcon("./visual/static/img/close_button.png"))
+        close_button.setIconSize(QSize(40, 40))
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                border-radius:6px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        """)
+        close_button.setFixedSize(60, 60)
+
+        close_button.setCursor(Qt.CursorShape.PointingHandCursor)
         nav_layout = QHBoxLayout()
         nav_layout.setSpacing(0)
         nav_layout.setContentsMargins(10, 0, 10, 0)
         nav_layout.addWidget(more_button)
         nav_layout.addWidget(title_label)
-
+        nav_layout.addWidget(close_button)
 
         top_layout.addWidget(companyTypeSalaryVisualization)
         top_layout.addWidget(educationSalaryVisualization)
@@ -120,36 +136,48 @@ class Visual(QWidget):
         main_layout.addLayout(nav_layout)
         main_layout.addLayout(top_layout)
         main_layout.addLayout(bottom_layout)
-        
+
+
         # 添加全屏切换快捷键 (使用QShortcut替代QAction)
         self.create_actions()
 
     def show_all_charts(self):
+        """显示所有图表"""
         for visual in self.visual_lst:
-            visual.show()
             if visual.isVisible():
-                # visual.setFixedSize(self.h_chart, visual.win_h // 2)
-                visual.web_view.setFixedSize(self.w_chart, self.h_chart)
+                # 恢复图表按钮可见性
+                visual.enlarge_chart_button.setVisible(True)
+                # 重置Web视图尺寸限制
+                visual.web_view.setMinimumSize(0, 0)
+                visual.web_view.setMaximumSize(16777215, 16777215)
+                # 重置图表尺寸
                 visual.win_h = self.h_chart
                 visual.win_w = self.w_chart
-                visual.win_h = self.h_chart
-                visual.win_w = self.w_chart
-            visual.update_chart()
-
-
-
-
+                # 更新图表显示
+                visual.update_chart()
+            else:
+                # 显示隐藏的图表
+                visual.show()
 
     def enlarge_chart(self, chart):
+        """放大指定图表"""
+        # 隐藏其他所有图表
         for visual in self.visual_lst:
-            visual.hide()
-        chart.show()
-        # chart.setFixedSize(chart.win_w*2, chart.win_h*2)
-        chart.web_view.setFixedSize(chart.win_w*2, chart.win_h*2)
-        chart.win_h = chart.win_h*2-20
-        chart.win_w = chart.win_w*2-20
-        chart.update_chart()
+            if visual != chart:
+                visual.hide()
 
+        # 隐藏当前图表的放大按钮
+        chart.enlarge_chart_button.setVisible(False)
+        # 设置图表视图尺寸
+        chart.web_view.setFixedSize(chart.win_w * 2, chart.win_h * 2)
+        # 调整图表尺寸
+        chart.win_h = chart.win_h * 2 - 20
+        chart.win_w = chart.win_w * 2 - 20
+        # 更新图表显示
+        chart.update_chart()
+        # 显示放大后的图表
+        chart.show()
+    
     def create_actions(self):
         # 创建全屏快捷键 (使用QShortcut)
         fullscreen_shortcut = QShortcut(QKeySequence(Qt.Key.Key_F11), self)

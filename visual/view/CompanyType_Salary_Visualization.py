@@ -98,6 +98,8 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
         return bar
 
 
+        # 更新图表并重新渲染
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = CompanyTypeSalaryVisualization()

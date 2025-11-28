@@ -160,9 +160,6 @@ class CodeTemplate(QWidget):
         # 5. 删除临时文件
         os.unlink(temp_file.name)
 
-
-
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = CodeTemplate()
