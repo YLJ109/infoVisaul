@@ -56,9 +56,19 @@ docker build -t infovisaul .
 
 ### 运行 Docker 容器
 
+在Linux系统上运行GUI应用程序：
 ```bash
 cd docker
 docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix infovisaul
+```
+
+在Windows或macOS系统上运行GUI应用程序：
+```bash
+# Windows (需要安装并运行XServer，例如VcXsrv)
+docker run -it --rm -e DISPLAY=host.docker.internal:0 infovisaul
+
+# macOS (需要安装并运行XQuartz)
+docker run -it --rm -e DISPLAY=docker.for.mac.host.internal:0 infovisaul
 ```
 
 ### 使用 docker-compose 运行
@@ -67,6 +77,13 @@ docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix infovis
 cd docker
 docker-compose up
 ```
+
+### 通过VNC访问（跨平台方案）
+
+容器还内置了VNC服务器，可以通过VNC客户端连接访问GUI界面：
+1. 启动容器：`docker-compose up`
+2. 使用VNC客户端连接 localhost:5900
+3. 默认密码为: password
 
 注意：在 Windows 或 macOS 上运行 GUI 应用程序可能需要额外的配置，具体取决于您的 Docker 环境。
 
@@ -146,6 +163,7 @@ infoVisaul/
 ![系统界面截图](page_img/login_page.png)
 ![系统界面截图](page_img/register_page.png)
 ![系统界面截图](page_img/visual_window.png)
+![系统界面截图](page_img/china_map.png)
 
 ## 开发计划
 

@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     x11vnc \
     fluxbox \
     wget \
+    dbus-x11 \
+    xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制项目文件
@@ -39,8 +41,12 @@ RUN useradd -m -s /bin/bash dockeruser
 RUN chown -R dockeruser:dockeruser /app
 USER dockeruser
 
-# 暴露端口（如果需要通过浏览器访问）
+# 暴露端口（VNC服务器端口）
 EXPOSE 5900
 
+# 启动脚本
+COPY ./docker/start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # 启动命令
-CMD ["python", "app.py"]
+CMD ["/app/start.sh"]
