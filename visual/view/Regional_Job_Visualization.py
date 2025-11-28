@@ -139,7 +139,6 @@ class RegionalJobVisualization(CodeTemplate):
 
             )
         )
-
         return geo
 
 

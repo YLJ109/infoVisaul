@@ -1,6 +1,9 @@
 import sys
 import tempfile
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QMessageBox
+
+from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QMessageBox, QPushButton
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6 import QtCore
 from PyQt6.QtWebEngineCore import QWebEngineSettings
@@ -8,18 +11,13 @@ import visual.setting as setting
 import os
 
 class CodeTemplate(QWidget):
+
     def __init__(self):
         super().__init__()
-        # 设置科技感背景色
-        self.setStyleSheet("""
-
-              border:1px solid #0d577f;
-
-        """)
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
-        self.win_w = 470
-        self.win_h = 380
+        self.win_w = 500
+        self.win_h = 360
         self.web_bg_color = "#001940"  # 科技感深蓝背景
         # 移除固定尺寸设置，允许窗口根据内容调整大小
         # self.setFixedSize(self.win_w+20, self.win_h+20)
@@ -41,6 +39,26 @@ class CodeTemplate(QWidget):
         main_layout.setContentsMargins(0, 0, 0, 0)
         # 创建网页视图用于显示图表
         self.web_view = QWebEngineView()
+        self.enlarge_chart_button = QPushButton()
+
+        self.enlarge_chart_button.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: none;
+                padding-left:10px;
+                border: 1px solid #0d577f;
+                margin-left:5px;
+                margin-right:5px;
+                
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        """)
+        self.enlarge_chart_button.setIcon(QIcon("./visual/static/img/enlargement_button.png"))
+        self.enlarge_chart_button.setMinimumSize(20, 20)
+        self.enlarge_chart_button.setCursor(QtCore.Qt.CursorShape.PointingHandCursor)
+        self.enlarge_chart_button.setIconSize(QSize(16, 16))
 
         # 设置WebEngine的参数，解决可能的显示问题
         self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
@@ -49,9 +67,10 @@ class CodeTemplate(QWidget):
         # 禁用WebGL和硬件加速以提高兼容性
         self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, False)
         self.web_view.settings().setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, False)
-        
-        main_layout.addWidget(self.web_view)
-        
+
+        main_layout.addWidget(self.web_view, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(self.enlarge_chart_button)
+
     def _load_echarts_js(self):
         """读取 ECharts JS 文件内容"""
         try:
@@ -137,11 +156,11 @@ class CodeTemplate(QWidget):
                              + html_content[body_start_index:])
                              
         # 4. 在WebView中显示修改后的HTML
-        print("正在加载HTML内容到Web视图...")
         self.web_view.setHtml(modified_html, baseUrl=QtCore.QUrl.fromLocalFile(temp_file.name))
         # 5. 删除临时文件
         os.unlink(temp_file.name)
-        print("HTML内容加载完成")
+
+
 
 
 if __name__ == "__main__":

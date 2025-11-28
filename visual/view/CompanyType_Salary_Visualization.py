@@ -94,6 +94,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 color="#00ffff"  # 科技蓝白色数据标签
             )
         )
+        
         return bar
 
 
