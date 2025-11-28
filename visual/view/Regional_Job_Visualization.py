@@ -21,7 +21,7 @@ class RegionalJobVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self,title_size=18, text_size=12):
         """创建中国地图岗位分布图"""
         # 检查数据是否为空
         if self.df.empty:
@@ -74,7 +74,6 @@ class RegionalJobVisualization(CodeTemplate):
             data_pair=data_pairs,
             type_="effectScatter",  # 使用涟漪效果散点图
             symbol_size=10,
-
         )
 
         # 设置全局配置
@@ -82,13 +81,13 @@ class RegionalJobVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="全国岗位分布地图",
                 title_textstyle_opts=opts.TextStyleOpts(
-                    font_size=18,
+                    font_size=title_size,
                     font_weight="bold",
                     font_family="微软雅黑",
                     color="#00ffff"  # 科技感青蓝色
                 ),
                 subtitle_textstyle_opts=opts.TextStyleOpts(
-                    font_size=14,
+                    font_size=text_size,
                     font_family="微软雅黑",
                     color="#00ffff",  # 科技感青蓝色
                 ),
@@ -100,7 +99,7 @@ class RegionalJobVisualization(CodeTemplate):
                 is_calculable=True,
                 pos_left="left",
                 pos_top="bottom",
-                textstyle_opts=opts.TextStyleOpts(color="#00ffff"),
+                textstyle_opts=opts.TextStyleOpts(color="#00ffff", font_size=text_size),
                 range_color=["#50a3ba", "#eac763", "#d94e5d"],
             ),
             tooltip_opts=opts.TooltipOpts(
@@ -117,15 +116,19 @@ class RegionalJobVisualization(CodeTemplate):
                 background_color="rgba(0, 0, 0, 0.7)",
                 border_color="#00ffff",
                 border_width=0,
+                textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
             ),
             legend_opts=opts.LegendOpts(
-                pos_top="40px",
+                pos_bottom="10px",
                 border_width=0,
                 textstyle_opts=opts.TextStyleOpts(
                     font_family="微软雅黑",
-                    color="#00ffff"
+                    color="#00ffff",
+                    font_size=text_size
+
                     ,border_width=0
                 )
+
             ),
         )
 
@@ -134,7 +137,7 @@ class RegionalJobVisualization(CodeTemplate):
             label_opts=opts.LabelOpts(
                 is_show=False,
                 font_family="微软雅黑",
-                font_size=12,
+                font_size=text_size,
                 color="#00ffff"
 
             )

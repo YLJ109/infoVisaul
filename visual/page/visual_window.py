@@ -174,7 +174,7 @@ class Visual(QWidget):
         chart.win_h = chart.win_h * 2 - 20
         chart.win_w = chart.win_w * 2 - 20
         # 更新图表显示
-        chart.update_chart()
+        chart.update_chart(32,20)
         # 显示放大后的图表
         chart.show()
     

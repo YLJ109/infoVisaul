@@ -62,7 +62,7 @@ class SalaryRangeVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self, title_size=18, text_size=12):
         """创建薪资区间分布桑基图"""
         # 检查数据是否为空
         if self.df.empty:
@@ -139,7 +139,7 @@ class SalaryRangeVisualization(CodeTemplate):
             nodes=nodes,
             links=links,
             linestyle_opt=opts.LineStyleOpts(opacity=0.2, curve=0.5, color="source"),
-            label_opts=opts.LabelOpts(position="right", color="#00ffff",border_width=0),  # 科技感青蓝色
+            label_opts=opts.LabelOpts(position="right", color="#00ffff",border_width=0, font_size=text_size),  # 科技感青蓝色
         )
 
         # 全局配置
@@ -147,11 +147,12 @@ class SalaryRangeVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="薪资区间分布桑基图",
                 pos_top="10px",
-                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#00ffff",border_width=0)  # 科技感青蓝色
+                title_textstyle_opts=opts.TextStyleOpts(font_size=title_size, font_weight="bold", font_family="微软雅黑", color="#00ffff",border_width=0)  # 科技感青蓝色
             ),
-            tooltip_opts=opts.TooltipOpts(trigger="item", trigger_on="mousemove", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=0)  # 科技感青蓝色边框
+            tooltip_opts=opts.TooltipOpts(trigger="item", trigger_on="mousemove", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=0, textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff"))  # 科技感青蓝色边框
         ,legend_opts=opts.LegendOpts(
             border_width=0,  # 边框宽度设为0，隐藏外框
+            textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
             ))  # 图例文字颜色（适配深色主题）
 
 

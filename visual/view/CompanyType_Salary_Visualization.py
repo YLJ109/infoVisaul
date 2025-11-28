@@ -20,7 +20,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self,title_size=18, text_size=12):
         """创建按岗位数量统计的分组柱状图"""
         company_counts = self.df['公司性质'].value_counts().head(10)
         bar = Bar(
@@ -45,7 +45,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="公司性质与岗位数量关系",
                 title_textstyle_opts=opts.TextStyleOpts(
-                    font_size=18,
+                    font_size=title_size,
                     font_weight="bold",
                     font_family="微软雅黑",
                     color="#00ffff"  # 科技蓝白色标题文字
@@ -55,7 +55,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             legend_opts=opts.LegendOpts(
                 pos_top="10%",
                 textstyle_opts=opts.TextStyleOpts(
-                    font_size=12,
+                    font_size=text_size,
                     color="#00ffff"  # 科技蓝白色图例文字
                 ),
                 border_width=0
@@ -64,7 +64,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
                 type_="category",
                 axislabel_opts=opts.LabelOpts(
                     rotate=45,
-                    font_size=11,
+                    font_size=text_size,
                     color="#00ffff"  # 科技蓝白色X轴标签文字
                 ),
                 name_gap=5,
@@ -75,7 +75,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             yaxis_opts=opts.AxisOpts(
                 type_="value",
                 axislabel_opts=opts.LabelOpts(
-                    font_size=11,
+                    font_size=text_size,
                     color="#00ffff"  # 科技蓝白色Y轴标签文字
                 ),
                 axisline_opts=opts.AxisLineOpts(
@@ -84,7 +84,7 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="axis",
-                textstyle_opts=opts.TextStyleOpts(color="#00ffff"),  # 科技蓝白色提示文字
+                textstyle_opts=opts.TextStyleOpts(color="#00ffff", font_size=text_size),  # 科技蓝白色提示文字
                 background_color="rgba(0, 0, 0, 0.7)"  # 深色提示框背景
             )
         )

@@ -96,13 +96,13 @@ class CodeTemplate(QWidget):
         """加载数据"""
         pass
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self,title_size=18, text_size=12):
         """创建按岗位数量统计的分组柱状图"""
         pass
 
-    def update_chart(self):
+    def update_chart(self,title_size=18, text_size=12):
         # 只生成岗位数量统计图表
-        chart = self.create_job_count_chart()
+        chart = self.create_job_count_chart(title_size, text_size)
 
         # 检查图表是否成功创建
         if chart is None:

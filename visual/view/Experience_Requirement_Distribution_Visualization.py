@@ -25,7 +25,7 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self, title_size=18, text_size=12):
         """创建经验要求分布分类占比趋势折线图"""
         # 检查数据是否为空
         if self.df.empty:
@@ -64,22 +64,24 @@ class ExperienceRequirementDistributionVisualization(CodeTemplate):
         line.set_global_opts(
             title_opts=opts.TitleOpts(
                 title="工作经验要求分布占比趋势",
-                title_textstyle_opts=opts.TextStyleOpts(font_size=18, font_weight="bold", font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
+                title_textstyle_opts=opts.TextStyleOpts(font_size=title_size, font_weight="bold", font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             legend_opts=opts.LegendOpts(
                 pos_top="10%",
                 border_width=0,
-                textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
+                textstyle_opts=opts.TextStyleOpts(font_size=text_size, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
             ),
             xaxis_opts=opts.AxisOpts(
-                axislabel_opts=opts.LabelOpts(font_size=12, rotate=30, font_family="微软雅黑", color="#00ffff")  # 科技感青蓝色
+                axislabel_opts=opts.LabelOpts(font_size=text_size, rotate=45, font_family="微软雅黑", color="#00ffff", interval=0),  # 科技感青蓝色
+                name_gap=20
             ),
             yaxis_opts=opts.AxisOpts(
                 name="占比(%)",
-                name_textstyle_opts=opts.TextStyleOpts(font_size=12, font_family="微软雅黑", color="#00ffff"),  # 科技感青蓝色
-                axislabel_opts=opts.LabelOpts(font_size=12, font_family="微软雅黑", formatter="{value}%", color="#00ffff")  # 科技感青蓝色
+                name_textstyle_opts=opts.TextStyleOpts(font_size=text_size, font_family="微软雅黑", color="#00ffff"),  # 科技感青蓝色
+                axislabel_opts=opts.LabelOpts(font_size=text_size, font_family="微软雅黑", formatter="{value}%", color="#00ffff")  # 科技感青蓝色
             ),
-            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=1)  # 科技感青蓝色边框
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="line", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=1, textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")),  # 科技感青蓝色边框
+
         )
 
         return line

@@ -51,7 +51,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self):
+    def create_job_count_chart(self, title_size=18, text_size=12):
         """创建岗位类型与关键条件交叉分析热力图"""
         # 检查数据是否为空
         if self.df.empty:
@@ -108,8 +108,8 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
         # 创建热力图
         heatmap = HeatMap(init_opts=opts.InitOpts(
             theme=ThemeType.DARK, 
-            width=f"{self.win_w}px", 
-            height=f"{self.win_h}px", 
+            width=f"{self.win_w}px",
+            height=f"{self.win_h}px",
             bg_color="transparent"
         ))
         
@@ -126,7 +126,10 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             label_opts=opts.LabelOpts(
                 is_show=True,
                 color="#00ffff",
-                formatter="{@[2]}K"
+                formatter="{@[2]}K",
+                font_size=text_size,
+                position="inside",
+                rich={}
             )
         )
 
@@ -136,7 +139,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="岗位类型与关键条件交叉分析热力图",
                 title_textstyle_opts=opts.TextStyleOpts(
-                    font_size=18,
+                    font_size=title_size,
                     font_weight="bold",
                     font_family="微软雅黑",
                     color="#00ffff"  # 科技感青蓝色
@@ -156,22 +159,25 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                 pos_bottom="10%",
                 is_calculable=True,
                 is_piecewise=False,
-                border_width=0
+                border_width=0,
+                textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
             ),
             tooltip_opts=opts.TooltipOpts(
                 trigger="item",
+                textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
             ),
             xaxis_opts=opts.AxisOpts(
-                axislabel_opts=opts.LabelOpts(color="#00ffff"),
+                axislabel_opts=opts.LabelOpts(color="#00ffff", font_size=text_size, interval=0, rotate=45),
+                axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#00ffff"))
             ),
             yaxis_opts=opts.AxisOpts(
-                axislabel_opts=opts.LabelOpts(color="#00ffff"),
-            )
-            , legend_opts=opts.LegendOpts(
+                axislabel_opts=opts.LabelOpts(color="#00ffff", font_size=text_size, interval=0),
+                axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(color="#00ffff"))
+            ),
+            legend_opts=opts.LegendOpts(
                 border_width=0,  # 边框宽度设为0，隐藏外框
-
-
-            )
+                textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
+            ),
         )
         
         return heatmap
