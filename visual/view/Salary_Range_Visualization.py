@@ -6,10 +6,12 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 import pyecharts.options as opts
 from pyecharts.charts import Sankey
 from pyecharts.globals import ThemeType
-from visual.view.Code_Template import CodeTemplate
+from visual.template.view_Template import CodeTemplate
 
 
 class SalaryRangeVisualization(CodeTemplate):
+    """薪资区间分布可视化类"""
+    
     def __init__(self):
         super().__init__()
         self.setWindowTitle("薪资区间分布")
@@ -34,6 +36,15 @@ class SalaryRangeVisualization(CodeTemplate):
             
             # 处理薪资范围数据，提取平均值作为代表
             def extract_salary_avg(salary_str):
+                """
+                处理薪资范围数据，提取平均值作为代表
+                
+                Args:
+                    salary_str: 薪资字符串
+                    
+                Returns:
+                    float: 平均薪资或None
+                """
                 if pd.isna(salary_str):
                     return None
                 try:
@@ -63,7 +74,15 @@ class SalaryRangeVisualization(CodeTemplate):
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
     def create_job_count_chart(self, title_size=18, text_size=12):
-        """创建薪资区间分布桑基图"""
+        """创建薪资区间分布桑基图
+        
+        Args:
+            title_size (int): 标题字体大小
+            text_size (int): 文本字体大小
+            
+        Returns:
+            Sankey: 配置好的桑基图对象
+        """
         # 检查数据是否为空
         if self.df.empty:
             print("数据为空，无法生成图表")
@@ -132,14 +151,24 @@ class SalaryRangeVisualization(CodeTemplate):
                 })
 
         # 创建桑基图
-        sankey = Sankey(init_opts=opts.InitOpts(theme=ThemeType.DARK, width=f"{self.win_w}px", height=f"{self.win_h}px", bg_color="transparent"))  # 改为透明背景
+        sankey = Sankey(init_opts=opts.InitOpts(
+            theme=ThemeType.DARK, 
+            width=f"{self.win_w}px", 
+            height=f"{self.win_h}px", 
+            bg_color="transparent"
+        ))  # 改为透明背景
 
         sankey.add(
             series_name="薪资区间分布",
             nodes=nodes,
             links=links,
             linestyle_opt=opts.LineStyleOpts(opacity=0.2, curve=0.5, color="source"),
-            label_opts=opts.LabelOpts(position="right", color="#00ffff",border_width=0, font_size=text_size),  # 科技感青蓝色
+            label_opts=opts.LabelOpts(
+                position="right", 
+                color="#00ffff",
+                border_width=0, 
+                font_size=text_size
+            ),  # 科技感青蓝色
         )
 
         # 全局配置
@@ -147,14 +176,33 @@ class SalaryRangeVisualization(CodeTemplate):
             title_opts=opts.TitleOpts(
                 title="薪资区间分布桑基图",
                 pos_top="10px",
-                title_textstyle_opts=opts.TextStyleOpts(font_size=title_size, font_weight="bold", font_family="微软雅黑", color="#00ffff",border_width=0)  # 科技感青蓝色
+                title_textstyle_opts=opts.TextStyleOpts(
+                    font_size=title_size, 
+                    font_weight="bold", 
+                    font_family="微软雅黑", 
+                    color="#00ffff",
+                    border_width=0
+                )  # 科技感青蓝色
             ),
-            tooltip_opts=opts.TooltipOpts(trigger="item", trigger_on="mousemove", background_color="rgba(0, 0, 0, 0.7)", border_color="#00ffff", border_width=0, textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff"))  # 科技感青蓝色边框
-        ,legend_opts=opts.LegendOpts(
-            border_width=0,  # 边框宽度设为0，隐藏外框
-            textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
-            ))  # 图例文字颜色（适配深色主题）
-
+            tooltip_opts=opts.TooltipOpts(
+                trigger="item", 
+                trigger_on="mousemove", 
+                background_color="rgba(0, 0, 0, 0.7)", 
+                border_color="#00ffff", 
+                border_width=0, 
+                textstyle_opts=opts.TextStyleOpts(
+                    font_size=text_size, 
+                    color="#00ffff"
+                )
+            ),  # 科技感青蓝色边框
+            legend_opts=opts.LegendOpts(
+                border_width=0,  # 边框宽度设为0，隐藏外框
+                textstyle_opts=opts.TextStyleOpts(
+                    font_size=text_size, 
+                    color="#00ffff"
+                )
+            )  # 图例文字颜色（适配深色主题）
+        )
 
         return sankey
 

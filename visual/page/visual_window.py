@@ -15,16 +15,18 @@ class Visual(QWidget):
         super().__init__()
         self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
         self.is_fullscreen = False
+        self.setWindowTitle('一零九就业市场洞察系统')
+        self.setGeometry(100, 100, 1300, 700)
+        self.setStyleSheet("""
+                    QWidget {
+                        background-color: #001940;  /* 科技感深蓝背景作为备选 */
+                        font-family: "微软雅黑";
+                    }
+                """)
+        self.showFullScreen()
         self.init_ui()
         
     def init_ui(self):
-
-        self.setWindowTitle('一零九就业市场洞察系统')
-        self.setGeometry(100, 100, 1300, 700)
-        # 设置窗口图标
-        self.setWindowIcon(QIcon("./visual/static/img/icon.png"))
-        self.showFullScreen()
-
         companyTypeSalaryVisualization = CompanyTypeSalaryVisualization()
         educationSalaryVisualization = EducationSalaryVisualization()
         experienceRequirementDistributionVisualization = ExperienceRequirementDistributionVisualization()
@@ -49,12 +51,7 @@ class Visual(QWidget):
                       regionalJobVisualization,
                       salaryRangeVisualization]
 
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #001940;  /* 科技感深蓝背景作为备选 */
-                font-family: "微软雅黑";
-            }
-        """)
+
 
         top_layout = QHBoxLayout()
         top_layout.setSpacing(0)
@@ -143,24 +140,30 @@ class Visual(QWidget):
 
     def show_all_charts(self):
         """显示所有图表"""
+        # 处理事件队列，确保UI更新
+        QApplication.processEvents()
+        
         for visual in self.visual_lst:
             if visual.isVisible():
                 # 恢复图表按钮可见性
                 visual.enlarge_chart_button.setVisible(True)
                 # 重置Web视图尺寸限制
                 visual.web_view.setMinimumSize(0, 0)
-                visual.web_view.setMaximumSize(16777215, 16777215)
                 # 重置图表尺寸
                 visual.win_h = self.h_chart
                 visual.win_w = self.w_chart
-                # 更新图表显示
                 visual.update_chart()
+                visual.show()
             else:
                 # 显示隐藏的图表
                 visual.show()
+                # 更新图表显示
 
     def enlarge_chart(self, chart):
         """放大指定图表"""
+        # 处理事件队列，确保UI更新
+        QApplication.processEvents()
+        
         # 隐藏其他所有图表
         for visual in self.visual_lst:
             if visual != chart:
@@ -175,8 +178,6 @@ class Visual(QWidget):
         chart.win_w = chart.win_w * 2 - 20
         # 更新图表显示
         chart.update_chart(32,20)
-        # 显示放大后的图表
-        chart.show()
     
     def create_actions(self):
         # 创建全屏快捷键 (使用QShortcut)

@@ -1,12 +1,20 @@
+# 公司性质与岗位数量关系可视化
+# 柱状图
 import sys
 import pandas as pd
-from PyQt6.QtWidgets import QApplication,QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox
 import pyecharts.options as opts
 from pyecharts.charts import Bar
 from pyecharts.globals import ThemeType
-from visual.view.Code_Template import CodeTemplate
+from visual.template.view_Template import CodeTemplate
+
 
 class CompanyTypeSalaryVisualization(CodeTemplate):
+    """公司性质与薪资关系可视化类"""
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("公司性质与岗位数量关系")
 
     def load_data(self):
         """加载数据"""
@@ -20,8 +28,21 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self,title_size=18, text_size=12):
-        """创建按岗位数量统计的分组柱状图"""
+    def create_job_count_chart(self, title_size=18, text_size=12):
+        """创建按岗位数量统计的分组柱状图
+        
+        Args:
+            title_size (int): 标题字体大小
+            text_size (int): 文本字体大小
+            
+        Returns:
+            Bar: 配置好的柱状图对象
+        """
+        # 检查数据是否为空
+        if self.df.empty:
+            print("数据为空，无法生成图表")
+            return None
+            
         company_counts = self.df['公司性质'].value_counts().head(10)
         bar = Bar(
             init_opts=opts.InitOpts(
@@ -32,15 +53,15 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
             )
         )
         bar.add_xaxis(company_counts.index.tolist())
-        bar.add_yaxis(series_name="岗位数量",
-                      y_axis=company_counts.values.tolist(),
-                      label_opts=opts.LabelOpts(
-                          is_show=True,
-                          position="top",
-                          color="#00ffff"  # 科技蓝白色标签文字
-
-                      )
-                      )
+        bar.add_yaxis(
+            series_name="岗位数量",
+            y_axis=company_counts.values.tolist(),
+            label_opts=opts.LabelOpts(
+                is_show=True,
+                position="top",
+                color="#00ffff"  # 科技蓝白色标签文字
+            )
+        )
         bar.set_global_opts(
             title_opts=opts.TitleOpts(
                 title="公司性质与岗位数量关系",
@@ -97,8 +118,6 @@ class CompanyTypeSalaryVisualization(CodeTemplate):
         
         return bar
 
-
-        # 更新图表并重新渲染
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

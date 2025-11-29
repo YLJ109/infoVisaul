@@ -1,4 +1,4 @@
-# 岗位类型与关键条件交叉分析
+# 岗位类型与关键条件交叉分析可视化
 # 热力图
 import sys
 import pandas as pd
@@ -6,10 +6,12 @@ from PyQt6.QtWidgets import QApplication, QMessageBox
 import pyecharts.options as opts
 from pyecharts.charts import HeatMap
 from pyecharts.globals import ThemeType
-from visual.view.Code_Template import CodeTemplate
+from visual.template.view_Template import CodeTemplate
 
 
 class JobTypeKeyRequirementsVisualization(CodeTemplate):
+    """岗位类型与关键条件交叉分析可视化类"""
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("岗位类型与关键条件交叉分析")
@@ -21,9 +23,18 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             self.df = pd.read_csv(self.data_path, encoding='utf-8')
             # 清理数据，去除空值
             self.df = self.df.dropna(subset=['经验要求', '关键词', '薪资'])
-            
+
             # 处理薪资范围数据，提取平均值作为代表
             def extract_salary_avg(salary_str):
+                """
+                处理薪资范围数据，提取平均值作为代表
+
+                Args:
+                    salary_str: 薪资字符串
+
+                Returns:
+                    float: 平均薪资或None
+                """
                 if pd.isna(salary_str):
                     return None
                 try:
@@ -40,10 +51,10 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                         return float(salary_str) * 1000 if 'K' in str(salary_str) or 'k' in str(salary_str) else float(salary_str)
                 except:
                     return None
-            
+
             # 应用薪资处理函数
             self.df['薪资'] = self.df['薪资'].apply(extract_salary_avg)
-            
+
             # 再次去除转换后产生的空值
             self.df = self.df.dropna()
         except Exception as e:
@@ -52,7 +63,15 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
     def create_job_count_chart(self, title_size=18, text_size=12):
-        """创建岗位类型与关键条件交叉分析热力图"""
+        """创建岗位类型与关键条件交叉分析热力图
+
+        Args:
+            title_size (int): 标题字体大小
+            text_size (int): 文本字体大小
+
+        Returns:
+            HeatMap: 配置好的热力图对象
+        """
         # 检查数据是否为空
         if self.df.empty:
             print("数据为空，无法生成图表")
@@ -60,32 +79,46 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
 
         # 提取经验要求、关键词和薪资数据
         exp_salary_data = self.df[['经验要求', '关键词', '薪资']].copy()
+
+        # 定义经验要求的正确顺序
+        experience_order = ['无经验', '1年以下', '1-3年', '3-5年', '5-10年', '10年以上']
         
-        # 数据预处理：提取前10个最常见的经验要求
-        top_experience = exp_salary_data['经验要求'].value_counts().head(10).index.tolist()
-        exp_salary_data = exp_salary_data[exp_salary_data['经验要求'].isin(top_experience)]
+        # 按照指定顺序过滤数据
+        ordered_exp_data = []
+        for exp in experience_order:
+            exp_data = exp_salary_data[exp_salary_data['经验要求'] == exp]
+            ordered_exp_data.append(exp_data)
+            
+        # 合并排序后的数据
+        exp_salary_data = pd.concat(ordered_exp_data)
         
+        # 获取按顺序排列的经验要求列表
+        top_experience = []
+        for exp in experience_order:
+            if not exp_salary_data[exp_salary_data['经验要求'] == exp].empty:
+                top_experience.append(exp)
+
         # 数据预处理：提取前10个最常见的关键词作为行业标识
         all_keywords = []
         for keywords in exp_salary_data['关键词']:
             if isinstance(keywords, str):
                 all_keywords.extend([kw.strip() for kw in keywords.split(',') if kw.strip()])
-        
+
         top_industries = pd.Series(all_keywords).value_counts().head(10).index.tolist()
-        
+
         # 构建热力图数据
         data = []
         for i, experience in enumerate(top_experience):
             exp_data = exp_salary_data[exp_salary_data['经验要求'] == experience]
-            
+
             # 统计每个关键词在该经验要求下的平均薪资
             industry_salary = {}
             industry_count = {}
-            
+
             for _, row in exp_data.iterrows():
                 keywords = row['关键词']
                 salary = row['薪资']
-                
+
                 # 确保salary是数值类型
                 if isinstance(salary, (int, float)) and isinstance(keywords, str):
                     for kw in keywords.split(','):
@@ -96,7 +129,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                                 industry_count[kw] = 0
                             industry_salary[kw] += float(salary)
                             industry_count[kw] += 1
-            
+
             # 计算平均薪资并转换为K单位
             for j, industry in enumerate(top_industries):
                 if industry in industry_salary and industry_count[industry] > 0:
@@ -107,12 +140,12 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
 
         # 创建热力图
         heatmap = HeatMap(init_opts=opts.InitOpts(
-            theme=ThemeType.DARK, 
+            theme=ThemeType.DARK,
             width=f"{self.win_w}px",
             height=f"{self.win_h}px",
             bg_color="transparent"
         ))
-        
+
         x_data = top_experience
         y_data = top_industries
 
@@ -145,8 +178,6 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                     color="#00ffff"  # 科技感青蓝色
                 ),
                 pos_top="10px"
-
-
             ),
             visualmap_opts=opts.VisualMapOpts(
                 is_show=True,
@@ -179,7 +210,7 @@ class JobTypeKeyRequirementsVisualization(CodeTemplate):
                 textstyle_opts=opts.TextStyleOpts(font_size=text_size, color="#00ffff")
             ),
         )
-        
+
         return heatmap
 
 

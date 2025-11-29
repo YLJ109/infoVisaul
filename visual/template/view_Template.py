@@ -16,6 +16,11 @@ class CodeTemplate(QWidget):
         super().__init__()
         self.web_view = None
         self.setWindowTitle("公司性质与岗位数量关联")
+        self.setStyleSheet("""
+        QWidget{
+            background-color: rgb(0, 25, 64);
+        }
+        """)
         # 获取当前窗口所在的屏幕
         current_screen = self.screen()  # QWidget 自带的 screen() 方法
         # 获取该屏幕的可用宽度
@@ -46,7 +51,7 @@ class CodeTemplate(QWidget):
 
         self.enlarge_chart_button.setStyleSheet("""
             QPushButton {
-                background-color: transparent;
+                background-color: rgb(0, 25, 64);
                 border: none;
                 padding-left:10px;
                 border: 1px solid rgb(0, 255, 255);

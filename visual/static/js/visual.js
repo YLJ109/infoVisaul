@@ -1,9 +1,54 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 创建加载中提示元素
+    function createLoadingIndicator() {
+        const loading = document.createElement('div');
+        loading.id = 'loading-indicator';
+        loading.textContent = '加载中...';
+        loading.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: "微软雅黑", sans-serif;
+            text-shadow: 0 0 3px #00ffff;
+            letter-spacing: 1px;
+            z-index: 9999;
+            background-color: rgba(0, 25, 64, 0.8);
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: 1px solid #00aaaa;
+            box-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
+            transition: opacity 0.15s ease-out;
+        `;
+        document.body.appendChild(loading);
+        return loading;
+    }
+
+    // 隐藏加载指示器
+    function hideLoadingIndicator() {
+        const loading = document.getElementById('loading-indicator');
+        if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => {
+                if (loading.parentNode) {
+                    loading.parentNode.removeChild(loading);
+                }
+            }, 150);
+        }
+    }
+
+    // 创建加载中提示
+    const loadingIndicator = createLoadingIndicator();
+
     // 创建随机粒子
     function createParticles() {
-        const particleCount = 40;
+        // 进一步减少粒子数量以提高性能
+        const particleCount = 8;
         for (let i = 0; i < particleCount; i++) {
-            setTimeout(createParticle, i * 300); // 每300毫秒创建一个粒子
+            setTimeout(createParticle, i * 400);
         }
     }
 
@@ -12,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const particle = document.createElement('div');
         particle.className = 'particle';
 
-        // 随机大小 (1px 到 4px)
-        const size = Math.random() * 3 + 1;
+        // 固定大小以提高性能
+        const size = 2;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
 
@@ -23,27 +68,20 @@ document.addEventListener('DOMContentLoaded', function() {
         particle.style.left = `${startX}%`;
         particle.style.top = `${startY}%`;
 
-        // 随机颜色
-        const colors = [
-            'rgba(0, 255, 255, 0.8)',   // 青色
-            'rgba(0, 200, 255, 0.6)',   // 蓝青色
-            'rgba(0, 150, 255, 0.5)'    // 蓝色
-        ];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.background = color;
-        particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+        // 固定颜色以提高性能
+        particle.style.background = 'rgba(0, 255, 255, 0.6)';
+        particle.style.boxShadow = '0 0 4px rgba(0, 255, 255, 0.6)';
+        particle.style.willChange = 'transform, opacity';
 
-        // 随机动画参数
-        const duration = Math.random() * 20 + 10; // 10-30秒
-        const xOffset = (Math.random() - 0.5) * 200; // -100px 到 100px
-        const yOffset = (Math.random() - 0.5) * 200; // -100px 到 100px
-        const rotation = Math.random() * 360; // 0-360度
+        // 简化动画参数以提高性能
+        const duration = 6;
+        const xOffset = (Math.random() - 0.5) * 80;
+        const yOffset = (Math.random() - 0.5) * 80;
 
         // 应用动画
         particle.style.animation = `floatRandom ${duration}s linear infinite`;
         particle.style.setProperty('--x-offset', `${xOffset}px`);
         particle.style.setProperty('--y-offset', `${yOffset}px`);
-        particle.style.setProperty('--rotation', `${rotation}deg`);
 
         document.body.appendChild(particle);
 
@@ -61,13 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
         style.innerHTML = `
             @keyframes floatRandom {
                 0% { 
-                    transform: translate(0, 0) rotate(0deg);
+                    transform: translate(0, 0);
                     opacity: 0;
                 }
                 10% { opacity: 1; }
                 90% { opacity: 1; }
                 100% { 
-                    transform: translate(var(--x-offset, 0), var(--y-offset, 0)) rotate(var(--rotation, 360deg));
+                    transform: translate(var(--x-offset, 0), var(--y-offset, 0));
                     opacity: 0;
                 }
             }
@@ -81,6 +119,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化粒子
     createParticles();
 
-    // 定期创建新粒子以保持效果
-    setInterval(createParticle, 800);
+    // 定期创建新粒子以保持效果，但降低频率
+    setInterval(createParticle, 1500);
+
+    // 页面加载完成后隐藏加载指示器
+    window.addEventListener('load', function() {
+        // 进一步缩短延迟时间以提高响应速度
+        setTimeout(hideLoadingIndicator, 150);
+    });
+
+    // 如果页面已经加载完成，立即隐藏加载指示器
+    if (document.readyState === 'complete') {
+        setTimeout(hideLoadingIndicator, 50);
+    }
 });

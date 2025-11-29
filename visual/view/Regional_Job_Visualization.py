@@ -1,3 +1,5 @@
+# 地区岗位分布可视化
+# 地理分布图
 import sys
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QMessageBox
@@ -5,10 +7,12 @@ import pyecharts.options as opts
 from pyecharts.charts import Geo
 from pyecharts.globals import ThemeType
 from pyecharts.commons.utils import JsCode
-from visual.view.Code_Template import CodeTemplate
+from visual.template.view_Template import CodeTemplate
 
 
 class RegionalJobVisualization(CodeTemplate):
+    """地区岗位分布可视化类"""
+    
     def load_data(self):
         """加载数据"""
         try:
@@ -21,8 +25,16 @@ class RegionalJobVisualization(CodeTemplate):
             self.df = pd.DataFrame()
             QMessageBox.warning(self, "警告", f"数据加载失败: {str(e)}", QMessageBox.StandardButton.Ok)
 
-    def create_job_count_chart(self,title_size=18, text_size=12):
-        """创建中国地图岗位分布图"""
+    def create_job_count_chart(self, title_size=18, text_size=12):
+        """创建中国地图岗位分布图
+        
+        Args:
+            title_size (int): 标题字体大小
+            text_size (int): 文本字体大小
+            
+        Returns:
+            Geo: 配置好的地理图对象
+        """
         # 检查数据是否为空
         if self.df.empty:
             print("数据为空，无法生成图表")
@@ -124,11 +136,9 @@ class RegionalJobVisualization(CodeTemplate):
                 textstyle_opts=opts.TextStyleOpts(
                     font_family="微软雅黑",
                     color="#00ffff",
-                    font_size=text_size
-
-                    ,border_width=0
+                    font_size=text_size,
+                    border_width=0
                 )
-
             ),
         )
 
@@ -139,9 +149,9 @@ class RegionalJobVisualization(CodeTemplate):
                 font_family="微软雅黑",
                 font_size=text_size,
                 color="#00ffff"
-
             )
         )
+        
         return geo
 
 
